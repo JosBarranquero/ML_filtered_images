@@ -1,4 +1,5 @@
 from time import time
+from math import sqrt
 import utilities as u
 import cv2 as cv
 import numpy as np
@@ -8,6 +9,12 @@ from sklearn.linear_model import LinearRegression
 from sklearn import svm
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.metrics import mean_squared_error
+
+# Pickle filenames and options to save and load
+original_pkl = 'original.pkl'
+filtered_pkl = 'filtered.pkl'
+save_to_pkl = True
+load_fr_pkl = True
 
 # Directories
 original_dir = '../originales/'
@@ -23,39 +30,35 @@ pred_ext = 'pred-{0}'
 width = 0
 height = 0
 
-# Lists in which the original and filtered images will be stored for processing
-original_list = []
-filtered_list = []
+if (load_fr_pkl and (u.file_exists(original_pkl) and u.file_exists(filtered_pkl))):
+    # Measuring load times
+    t0 = time()
+    df_original = pd.read_pickle(original_pkl)
+    df_filtered = pd.read_pickle(filtered_pkl)
 
-# Recovering the file names to process
-original_files = u.file_list(original_dir, img_ext)
-filtered_files = u.file_list(filtered_dir, filter_ext)
+    print("Loading Time:", round(time()-t0, 3), "s")
 
-# Check the number of files
-if (len(original_files) != len(filtered_files)):
-    raise RuntimeError('Number of originals and filtered images not matching')
+    # Assuming square images
+    width = int(sqrt(len(df_original.columns)))
+    height = width
+else:
+    # Lists in which the original and filtered images will be stored for processing
+    original_list = []
+    filtered_list = []
 
-# Measuring load times
-t0 = time()
+    # Recovering the file names to process
+    original_files = u.file_list(original_dir, img_ext)
+    filtered_files = u.file_list(filtered_dir, filter_ext)
 
-# First image is processed manually
-i = 0
-original_path = original_dir + original_files[i]
-filtered_path = filtered_dir + filtered_files[i]
+    # Check the number of files
+    if (len(original_files) != len(filtered_files)):
+        raise RuntimeError('Number of originals and filtered images not matching')
 
-# Loading the image into memory
-original_img = cv.imread(original_path, cv.IMREAD_GRAYSCALE)
-filtered_img = cv.imread(filtered_path, cv.IMREAD_GRAYSCALE)
+    # Measuring load times
+    t0 = time()
 
-# Getting the physical size of the image (all of them must be the same size)
-(height, width) = original_img.shape
-
-# Converting the image from a heightXwidth matrix to a (height*width) vector
-original_list.append(np.reshape(original_img, newshape=(1, np.product((height, width))))[0])
-filtered_list.append(np.reshape(filtered_img, newshape=(1, np.product((height, width))))[0])
-
-# The rest of images get processed automatically
-for i in range(1, len(original_files)):
+    # First image is processed manually
+    i = 0
     original_path = original_dir + original_files[i]
     filtered_path = filtered_dir + filtered_files[i]
 
@@ -63,18 +66,39 @@ for i in range(1, len(original_files)):
     original_img = cv.imread(original_path, cv.IMREAD_GRAYSCALE)
     filtered_img = cv.imread(filtered_path, cv.IMREAD_GRAYSCALE)
 
+    # Getting the physical size of the image (all of them must be the same size)
+    (height, width) = original_img.shape
+
     # Converting the image from a heightXwidth matrix to a (height*width) vector
     original_list.append(np.reshape(original_img, newshape=(1, np.product((height, width))))[0])
     filtered_list.append(np.reshape(filtered_img, newshape=(1, np.product((height, width))))[0])
 
-# Lists to Pandas DataFrame conversion
-df_original = pd.DataFrame(np.array(original_list, dtype=np.uint8))
-df_filtrada = pd.DataFrame(np.array(filtered_list, dtype=np.uint8))
+    # The rest of images get processed automatically
+    for i in range(1, len(original_files)):
+        original_path = original_dir + original_files[i]
+        filtered_path = filtered_dir + filtered_files[i]
 
-print("Loading Time:", round(time()-t0, 3), "s")
+        # Loading the image into memory
+        original_img = cv.imread(original_path, cv.IMREAD_GRAYSCALE)
+        filtered_img = cv.imread(filtered_path, cv.IMREAD_GRAYSCALE)
+
+        # Converting the image from a heightXwidth matrix to a (height*width) vector
+        original_list.append(np.reshape(original_img, newshape=(1, np.product((height, width))))[0])
+        filtered_list.append(np.reshape(filtered_img, newshape=(1, np.product((height, width))))[0])
+
+    # Lists to Pandas DataFrame conversion
+    df_original = pd.DataFrame(np.array(original_list, dtype=np.uint8))
+    df_filtered = pd.DataFrame(np.array(filtered_list, dtype=np.uint8))
+
+    print("Loading Time:", round(time()-t0, 3), "s")
+
+    # Saving to a pickle file
+    if (save_to_pkl):
+        df_original.to_pickle(original_pkl)
+        df_filtered.to_pickle(filtered_pkl)
 
 # Creation of the training and testing datasets
-X_train, X_test, y_train, y_test = train_test_split(df_original, df_filtrada, test_size=0.10)
+X_train, X_test, y_train, y_test = train_test_split(df_original, df_filtered, test_size=0.10)
 # Manual creation of the datasets
 # X_train = df_original.head(75)
 # X_test = df_original.tail(25)
