@@ -11,8 +11,8 @@ from sklearn.tree import DecisionTreeRegressor
 from sklearn.metrics import mean_squared_error
 
 # Pickle filenames and options to save and load
-original_pkl = 'original.pkl'
-filtered_pkl = 'filtered.pkl'
+original_pkl = 'original-eng.pkl'
+filtered_pkl = 'filtered-eng.pkl'
 save_to_pkl = True
 load_fr_pkl = True
 
@@ -36,7 +36,7 @@ if (load_fr_pkl and (u.file_exists(original_pkl) and u.file_exists(filtered_pkl)
     df_original = pd.read_pickle(original_pkl)
     df_filtered = pd.read_pickle(filtered_pkl)
 
-    print("Loading Time:", round(time()-t0, 3), "s")
+    print("Loading Time (pickle):", round(time()-t0, 3), "s")
 
     # Assuming square images
     width = int(sqrt(len(df_original.columns)))
@@ -66,12 +66,18 @@ else:
     original_img = cv.imread(original_path, cv.IMREAD_GRAYSCALE)
     filtered_img = cv.imread(filtered_path, cv.IMREAD_GRAYSCALE)
 
+    # Manually applying "feature engineering"
+    # Filters are applied convoluting a matrix
+    # By getting the array of pixels that get convoluted with the matrix and its result, we may get better predictions
+    original_img = np.array([original_img[0,0], original_img[0,1], original_img[0,2], original_img[1,0], original_img[1,1], original_img[1,2], original_img[2,0], original_img[2,1], original_img[2,2]])
+    filtered_img = np.array(filtered_img[1,1])
+
     # Getting the physical size of the image (all of them must be the same size)
-    (height, width) = original_img.shape
+    (height, width) = (3,3)
 
     # Converting the image from a heightXwidth matrix to a (height*width) vector
-    original_list.append(np.reshape(original_img, newshape=(1, np.product((height, width))))[0])
-    filtered_list.append(np.reshape(filtered_img, newshape=(1, np.product((height, width))))[0])
+    original_list.append(original_img)
+    filtered_list.append(filtered_img)
 
     # The rest of images get processed automatically
     for i in range(1, len(original_files)):
@@ -82,15 +88,18 @@ else:
         original_img = cv.imread(original_path, cv.IMREAD_GRAYSCALE)
         filtered_img = cv.imread(filtered_path, cv.IMREAD_GRAYSCALE)
 
+        original_img = np.array([original_img[0,0], original_img[0,1], original_img[0,2], original_img[1,0], original_img[1,1], original_img[1,2], original_img[2,0], original_img[2,1], original_img[2,2]])
+        filtered_img = np.array(filtered_img[1,1])
+
         # Converting the image from a heightXwidth matrix to a (height*width) vector
-        original_list.append(np.reshape(original_img, newshape=(1, np.product((height, width))))[0])
-        filtered_list.append(np.reshape(filtered_img, newshape=(1, np.product((height, width))))[0])
+        original_list.append(original_img)
+        filtered_list.append(filtered_img)
 
     # Lists to Pandas DataFrame conversion
     df_original = pd.DataFrame(np.array(original_list, dtype=np.uint8))
     df_filtered = pd.DataFrame(np.array(filtered_list, dtype=np.uint8))
 
-    print("Loading Time:", round(time()-t0, 3), "s")
+    print("Loading Time (regular):", round(time()-t0, 3), "s")
 
     # Saving to a pickle file
     if (save_to_pkl):
@@ -125,7 +134,8 @@ mse = mean_squared_error(y_pred, y_test)
 # Converting the predictions into real viewable images
 for i in range (0, len(y_pred)):
     # Converting from a (height*width) vector back to a heightXwidth matrix
-    pred_img = np.reshape(y_pred[i], newshape=(height, width))
+    # pred_img = np.reshape(y_pred[i], newshape=(height, width))
+    pred_img = y_pred[i]
     pred_img = pred_img.astype(np.uint8)
     
     # imagen_real = y_test.loc[i+75,:]
@@ -137,9 +147,10 @@ for i in range (0, len(y_pred)):
 # Getting the actual images
 indices = y_test.index
 for index, value in enumerate(indices):
-    act_img = y_test.loc[value,:]
-    act_img = np.reshape(act_img.to_numpy(dtype='uint8'), newshape=(height, width))
+    imagen_real = y_test.loc[value,:]
+    imagen_real = np.array(imagen_real, dtype=np.uint8)
+    # imagen_real = np.reshape(imagen_real.to_numpy(dtype='uint8'), newshape=(height, width))
     
-    cv.imwrite((predict_dir + pred_ext + '-actual' + img_ext).format(index), act_img)
+    cv.imwrite((predict_dir + pred_ext + '-actual' + img_ext).format(index), imagen_real)
 
 print("MSE = {0}".format(mse))
