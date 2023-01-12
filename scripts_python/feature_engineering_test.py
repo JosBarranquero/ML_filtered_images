@@ -147,10 +147,10 @@ for i in range (0, len(y_pred)):
 # Getting the actual images
 indices = y_test.index
 for index, value in enumerate(indices):
-    imagen_real = y_test.loc[value,:]
-    imagen_real = np.array(imagen_real, dtype=np.uint8)
+    actual_img = y_test.loc[value,:]
+    actual_img = np.array(actual_img, dtype=np.uint8)
     # imagen_real = np.reshape(imagen_real.to_numpy(dtype='uint8'), newshape=(height, width))
     
-    cv.imwrite((predict_dir + pred_ext + '-actual' + img_ext).format(index), imagen_real)
+    cv.imwrite((predict_dir + pred_ext + '-actual' + img_ext).format(index), actual_img)
 
 print("MSE = {0}".format(mse))

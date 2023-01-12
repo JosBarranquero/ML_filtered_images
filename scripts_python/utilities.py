@@ -1,6 +1,17 @@
 import os
+import random
 
+def random_index_list(a_list: list[str]) -> list[int]:
+    """This funcion returns a list of indices in random order"""
+    max_value = len(a_list)
+    
+    # Getting a list of max_value random unrepeated numbers between 0 and max_value
+    indices = random.sample(range(0, max_value), max_value)
+
+    return indices
+        
 def file_exists(file_name: str) -> bool:
+    """This function checks if a given file exists"""
     return os.path.isfile(file_name)
 
 def file_count(directory: str, extension: str) -> int:

@@ -8,6 +8,7 @@ filtradas/
 originales/
 imagenes_iniciales/
 prediccion/
+explicaciones/
 
 # Pandas
 *.pkl
