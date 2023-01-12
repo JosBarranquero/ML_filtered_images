@@ -17,9 +17,9 @@ save_to_pkl = True
 load_fr_pkl = True
 
 # Directories
-original_dir = '../originales/'
-filtered_dir = '../filtradas/'
-predict_dir = '../prediccion/'
+original_dir = './originales/'
+filtered_dir = './filtradas/'
+predict_dir = './prediccion/'
 
 # File extensions
 img_ext = '.bmp'

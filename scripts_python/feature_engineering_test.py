@@ -13,17 +13,17 @@ from sklearn.metrics import mean_squared_error
 # Pickle filenames and options to save and load
 original_pkl = 'original-eng.pkl'
 filtered_pkl = 'filtered-eng.pkl'
-save_to_pkl = True
-load_fr_pkl = True
+save_to_pkl = False
+load_fr_pkl = False
 
 # Directories
-original_dir = '../originales/'
-filtered_dir = '../filtradas/'
-predict_dir = '../prediccion/'
+original_dir = './originales/'
+filtered_dir = './filtradas/'
+predict_dir = './prediccion/'
 
 # File extensions
 img_ext = '.bmp'
-filter_ext = '-low' + img_ext
+filter_ext = '-high' + img_ext
 pred_ext = 'pred-{0}'
 
 # Image characteristics
@@ -136,6 +136,13 @@ for i in range (0, len(y_pred)):
     # Converting from a (height*width) vector back to a heightXwidth matrix
     # pred_img = np.reshape(y_pred[i], newshape=(height, width))
     pred_img = y_pred[i]
+    
+    # Checking for underflow and overflow
+    if (pred_img < 0):
+        pred_img = np.array([0])
+    elif (pred_img > 255):
+        pred_img = np.array([255])
+
     pred_img = pred_img.astype(np.uint8)
     
     # imagen_real = y_test.loc[i+75,:]
