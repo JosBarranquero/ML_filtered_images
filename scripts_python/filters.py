@@ -1,7 +1,6 @@
 import cv2 as cv
 import numpy as np
 import math
-import utilities as u
 
 def low_pass_filter(in_file: str, out_file: str, size: int = 3, type: int = 1):
     """This function applies a low pass filter to a grayscale image. The resulting image is then saved to disk"""
@@ -28,9 +27,8 @@ def low_pass_filter(in_file: str, out_file: str, size: int = 3, type: int = 1):
     # Second parameter = -1 : keeps the same colordepth
     result = cv.filter2D(original, -1, filter)
 
-    # Save it to disk (if file doesn't already exist)
-    if (not u.file_exists(out_file)):
-        cv.imwrite(out_file, result)
+    # Save it to disk
+    cv.imwrite(out_file, result)
 
 def high_pass_filter(in_file: str, out_file: str, size: int = 3):
     """This function applies a high pass filter to a grayscale image. The resulting image is then saved to disk"""
@@ -51,9 +49,8 @@ def high_pass_filter(in_file: str, out_file: str, size: int = 3):
     # Second parameter = -1 : keeps the same colordepth
     result = cv.filter2D(original, -1, filter)
 
-    # Save it to disk (if file doesn't already exist)
-    if (not u.file_exists(out_file)):
-        cv.imwrite(out_file, result)
+    # Save it to disk
+    cv.imwrite(out_file, result)
 
 def median_filter(in_file: str, out_file: str, size: int = 3):
     """This function applies a median filter to a grayscale image. The resulting image is then saved to disk"""
@@ -69,9 +66,8 @@ def median_filter(in_file: str, out_file: str, size: int = 3):
     # Applying mediang filter (sizeXsize)
     result = cv.medianBlur(original, size)
 
-    # Save it to disk (if file doesn't already exist)
-    if (not u.file_exists(out_file)):
-        cv.imwrite(out_file, result)
+    # Save it to disk
+    cv.imwrite(out_file, result)
 
 def hsobel_filter(in_file: str, out_file: str, size: int = 3):
     """This function applies a horizontal Sobel filter to a grayscale image. The resulting image is then saved to sisk"""
@@ -87,9 +83,8 @@ def hsobel_filter(in_file: str, out_file: str, size: int = 3):
     # Applying horizontal Sobel filter (sizeXsize)
     result = cv.Sobel(original, -1, 1, 0, ksize=size)
 
-    # Save it to disk (if file doesn't already exist)
-    if (not u.file_exists(out_file)):
-        cv.imwrite(out_file, result)
+    # Save it to disk
+    cv.imwrite(out_file, result)
 
 def vsobel_filter(in_file: str, out_file: str, size: int = 3):
     """This function applies a vertical Sobel filter to a grayscale image. The resulting image is then saved to sisk"""
@@ -105,9 +100,8 @@ def vsobel_filter(in_file: str, out_file: str, size: int = 3):
     # Applying vertical Sobel filter (sizeXsize)
     result = cv.Sobel(original, -1, 0, 1, ksize=size)
 
-    # Save it to disk (if file doesn't already exist)
-    if (not u.file_exists(out_file)):
-        cv.imwrite(out_file, result)
+    # Save it to disk
+    cv.imwrite(out_file, result)
 
 
 # Show a message if the script is run by itself

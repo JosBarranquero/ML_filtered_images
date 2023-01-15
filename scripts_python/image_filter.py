@@ -26,20 +26,25 @@ for i in range(1, num_images + 1):
 
     if low_filter:
         output_low = '{0}imagen{1}-low.bmp'.format(output_path, i)
-        f.low_pass_filter(input, output_low)
+        if (not u.file_exists(output_low)):     # Only process if the output file doesn't already exist
+            f.low_pass_filter(input, output_low)
 
     if high_filter:
         output_high = '{0}imagen{1}-high.bmp'.format(output_path, i)
-        f.high_pass_filter(input, output_high)
+        if (not u.file_exists(output_high)):     # Only process if the output file doesn't already exist
+            f.high_pass_filter(input, output_high)
 
     if median_filter:
         output_median = '{0}imagen{1}-median.bmp'.format(output_path, i)
-        f.median_filter(input, output_median)
+        if (not u.file_exists(output_median)):     # Only process if the output file doesn't already exist
+            f.median_filter(input, output_median)
 
     if hsobel_filter:
         output_hsobel = '{0}imagen{1}-hsobel.bmp'.format(output_path, i)
-        f.hsobel_filter(input, output_hsobel)
+        if (not u.file_exists(output_hsobel)):     # Only process if the output file doesn't already exist
+            f.hsobel_filter(input, output_hsobel)
 
     if vsobel_filter:
         output_vsobel = '{0}imagen{1}-vsobel.bmp'.format(output_path, i)
-        f.vsobel_filter(input, output_vsobel)
+        if (not u.file_exists(output_vsobel)):     # Only process if the output file doesn't already exist
+            f.vsobel_filter(input, output_vsobel)
