@@ -1,7 +1,7 @@
 import os
 import random
 
-def random_index_list(a_list: list[str]) -> list[int]:
+def randomIndexList(a_list: list[str]) -> list[int]:
     """This funcion returns a list of indices in random order"""
     max_value = len(a_list)
     
@@ -10,11 +10,11 @@ def random_index_list(a_list: list[str]) -> list[int]:
 
     return indices
         
-def file_exists(file_name: str) -> bool:
+def fileExists(file_name: str) -> bool:
     """This function checks if a given file exists"""
     return os.path.isfile(file_name)
 
-def file_count(directory: str, extension: str) -> int:
+def fileCount(directory: str, extension: str) -> int:
     """This function counts the files in a directory, given a certain extension"""
     num_files = 0
 
@@ -26,7 +26,7 @@ def file_count(directory: str, extension: str) -> int:
 
     return num_files
 
-def file_list(directory: str, extension:str='.bmp') -> list[str]:
+def fileList(directory: str, extension:str='.bmp') -> list[str]:
     """This function looks for files in a directory, given a certain extension. Then, it returns them in a list"""
     files = list()
 

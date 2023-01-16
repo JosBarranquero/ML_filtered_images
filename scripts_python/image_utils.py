@@ -1,8 +1,10 @@
 import cv2 as cv
 import numpy as np
+import pandas as pd
 import math
 
-def low_pass_filter(in_file: str, out_file: str, size: int = 3, type: int = 1):
+## Start of image filters section
+def lowPassFilter(in_file: str, out_file: str, size: int = 3, type: int = 1):
     """This function applies a low pass filter to a grayscale image. The resulting image is then saved to disk"""
     # Reading the input image
     original = cv.imread(in_file, cv.IMREAD_UNCHANGED)
@@ -30,7 +32,7 @@ def low_pass_filter(in_file: str, out_file: str, size: int = 3, type: int = 1):
     # Save it to disk
     cv.imwrite(out_file, result)
 
-def high_pass_filter(in_file: str, out_file: str, size: int = 3):
+def highPassFilter(in_file: str, out_file: str, size: int = 3):
     """This function applies a high pass filter to a grayscale image. The resulting image is then saved to disk"""
     # Reading the input image
     original = cv.imread(in_file, cv.IMREAD_UNCHANGED)
@@ -52,7 +54,7 @@ def high_pass_filter(in_file: str, out_file: str, size: int = 3):
     # Save it to disk
     cv.imwrite(out_file, result)
 
-def median_filter(in_file: str, out_file: str, size: int = 3):
+def medianFilter(in_file: str, out_file: str, size: int = 3):
     """This function applies a median filter to a grayscale image. The resulting image is then saved to disk"""
     # Reading the input image
     original = cv.imread(in_file, cv.IMREAD_UNCHANGED)
@@ -69,7 +71,7 @@ def median_filter(in_file: str, out_file: str, size: int = 3):
     # Save it to disk
     cv.imwrite(out_file, result)
 
-def hsobel_filter(in_file: str, out_file: str, size: int = 3):
+def hSobelFilter(in_file: str, out_file: str, size: int = 3):
     """This function applies a horizontal Sobel filter to a grayscale image. The resulting image is then saved to sisk"""
     # Reading the input image
     original = cv.imread(in_file, cv.IMREAD_UNCHANGED)
@@ -86,7 +88,7 @@ def hsobel_filter(in_file: str, out_file: str, size: int = 3):
     # Save it to disk
     cv.imwrite(out_file, result)
 
-def vsobel_filter(in_file: str, out_file: str, size: int = 3):
+def vSobelFilter(in_file: str, out_file: str, size: int = 3):
     """This function applies a vertical Sobel filter to a grayscale image. The resulting image is then saved to sisk"""
     # Reading the input image
     original = cv.imread(in_file, cv.IMREAD_UNCHANGED)
@@ -102,7 +104,39 @@ def vsobel_filter(in_file: str, out_file: str, size: int = 3):
 
     # Save it to disk
     cv.imwrite(out_file, result)
+## End of image filters section
 
+## Start of subimage section
+def getOriginalImgSubmatrices(in_img: cv.Mat) -> pd.DataFrame:
+    """Return the original image sliced intro 3x3 submatrices necessary for later processing"""
+    # shape[1] is the image height, shape[0] is the image width
+    height = in_img.shape[1]
+    width = in_img.shape[0]
+    # Submatrices will be 3x3 in size
+    sub_height = 3
+    sub_width = sub_height
+    # List which will store the submatrices
+    sub_list = []
+
+    # To create the submatrices, the default OpenCV BorderType behavior will be replicated
+    # OpenCV BORDER_REFLECT_101 reflects the pixels in the following manner gfedcb|abcdefgh|gfedcba
+    # Hopefully, someday this code won't be so rough
+    for i in range(0, height):  # loop through rows 
+        for j in range(0, width):   # loop through columns
+            cur_sub = []
+            if (i == 0):    # first row
+                p=0
+            elif (i == (height-1)): # last row
+                p=0
+            else:   # rest of rows
+                if (j == 0):    # first column
+                    cur_sub = np.array([in_img[i-1, j+1], in_img[i-1, j], in_img[i-1, j+1], in_img[i, j+1], in_img[i, j], in_img[i, j+1], in_img[i+1, j+1], in_img[i+1, j], in_img[i+1, j+1]])
+                elif (j == (height-1)): # last column
+                    cur_sub = np.array([in_img[i-1, j-1], in_img[i-1, j], in_img[i-1, j-1], in_img[i, j-1], in_img[i, j], in_img[i, j-1], in_img[i+1, j-1], in_img[i+1, j], in_img[i+1, j-1]])
+                else:   # rest of columns
+                    cur_sub = np.array([in_img[i-1, j-1], in_img[i-1, j], in_img[i-1, j+1], in_img[i, j-1], in_img[i, j], in_img[i, j+1], in_img[i+1, j-1], in_img[i+1, j], in_img[i+1, j+1]])
+    return None # TODO return something
+## End of subimage section
 
 # Show a message if the script is run by itself
 if __name__ == '__main__':

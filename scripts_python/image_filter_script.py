@@ -1,5 +1,5 @@
-import filters as f
-import utilities as u
+import image_utils as iu
+import file_utils as fu
 
 # Processing options (disabled)
 # low_filter = False
@@ -18,7 +18,7 @@ input_path = './originales/'
 output_path  = './filtradas/'
 
 # Counting the images to process
-num_images = u.file_count(input_path, '.bmp')
+num_images = fu.fileCount(input_path, '.bmp')
 
 # Processing images one by one
 for i in range(1, num_images + 1):
@@ -26,25 +26,25 @@ for i in range(1, num_images + 1):
 
     if low_filter:
         output_low = '{0}imagen{1}-low.bmp'.format(output_path, i)
-        if (not u.file_exists(output_low)):     # Only process if the output file doesn't already exist
-            f.low_pass_filter(input, output_low)
+        if (not fu.fileExists(output_low)):     # Only process if the output file doesn't already exist
+            iu.lowPassFilter(input, output_low)
 
     if high_filter:
         output_high = '{0}imagen{1}-high.bmp'.format(output_path, i)
-        if (not u.file_exists(output_high)):     # Only process if the output file doesn't already exist
-            f.high_pass_filter(input, output_high)
+        if (not fu.fileExists(output_high)):     # Only process if the output file doesn't already exist
+            iu.highPassFilter(input, output_high)
 
     if median_filter:
         output_median = '{0}imagen{1}-median.bmp'.format(output_path, i)
-        if (not u.file_exists(output_median)):     # Only process if the output file doesn't already exist
-            f.median_filter(input, output_median)
+        if (not fu.fileExists(output_median)):     # Only process if the output file doesn't already exist
+            iu.medianFilter(input, output_median)
 
     if hsobel_filter:
         output_hsobel = '{0}imagen{1}-hsobel.bmp'.format(output_path, i)
-        if (not u.file_exists(output_hsobel)):     # Only process if the output file doesn't already exist
-            f.hsobel_filter(input, output_hsobel)
+        if (not fu.fileExists(output_hsobel)):     # Only process if the output file doesn't already exist
+            iu.hSobelFilter(input, output_hsobel)
 
     if vsobel_filter:
         output_vsobel = '{0}imagen{1}-vsobel.bmp'.format(output_path, i)
-        if (not u.file_exists(output_vsobel)):     # Only process if the output file doesn't already exist
-            f.vsobel_filter(input, output_vsobel)
+        if (not fu.fileExists(output_vsobel)):     # Only process if the output file doesn't already exist
+            iu.vSobelFilter(input, output_vsobel)

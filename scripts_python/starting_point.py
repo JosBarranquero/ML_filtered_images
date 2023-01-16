@@ -1,6 +1,6 @@
 from time import time
 from math import sqrt
-import utilities as u
+import file_utils as fu
 import cv2 as cv
 import numpy as np
 import pandas as pd
@@ -30,7 +30,7 @@ pred_ext = 'pred-{0}'
 width = 0
 height = 0
 
-if (load_fr_pkl and (u.file_exists(original_pkl) and u.file_exists(filtered_pkl))):
+if (load_fr_pkl and (fu.fileExists(original_pkl) and fu.fileExists(filtered_pkl))):
     # Measuring load times
     t0 = time()
     df_original = pd.read_pickle(original_pkl)
@@ -47,8 +47,8 @@ else:
     filtered_list = []
 
     # Recovering the file names to process
-    original_files = u.file_list(original_dir, img_ext)
-    filtered_files = u.file_list(filtered_dir, filter_ext)
+    original_files = fu.fileList(original_dir, img_ext)
+    filtered_files = fu.fileList(filtered_dir, filter_ext)
 
     # Check the number of files
     if (len(original_files) != len(filtered_files)):
