@@ -109,12 +109,8 @@ def vSobelFilter(in_file: str, out_file: str, size: int = 3):
 ## Start of subimage section
 def getOriginalImgSubmatrices(in_img: cv.Mat) -> pd.DataFrame:
     """Return the original image sliced intro 3x3 submatrices necessary for later processing"""
-    # shape[1] is the image height, shape[0] is the image width
-    height = in_img.shape[1]
-    width = in_img.shape[0]
-    # Submatrices will be 3x3 in size
-    sub_height = 3
-    sub_width = sub_height
+    # shape[0] is the image height, shape[1] is the image width
+    (height, width) = in_img.shape
     # List which will store the submatrices
     sub_list = []
 
@@ -123,11 +119,21 @@ def getOriginalImgSubmatrices(in_img: cv.Mat) -> pd.DataFrame:
     # Hopefully, someday this code won't be so rough
     for i in range(0, height):  # loop through rows 
         for j in range(0, width):   # loop through columns
-            cur_sub = []
+            cur_sub = []    # current iteration submatrix
             if (i == 0):    # first row
-                p=0
+                if (j == 0):    # first column
+                    cur_sub = np.array([in_img[i+1, j+1], in_img[i+1, j], in_img[i+1, j+1], in_img[i, j+1], in_img[i, j], in_img[i, j+1], in_img[i+1, j+1], in_img[i+1, j], in_img[i+1, j+1]])
+                elif (j == (height-1)): # last column
+                    cur_sub = np.array([in_img[i+1, j-1], in_img[i+1, j], in_img[i+1, j-1], in_img[i, j-1], in_img[i, j], in_img[i, j-1], in_img[i+1, j-1], in_img[i+1, j], in_img[i+1, j-1]])
+                else:   # rest of columns
+                    cur_sub = np.array([in_img[i+1, j-1], in_img[i+1, j], in_img[i+1, j+1], in_img[i, j-1], in_img[i, j], in_img[i, j+1], in_img[i+1, j-1], in_img[i+1, j], in_img[i+1, j+1]])
             elif (i == (height-1)): # last row
-                p=0
+                if (j == 0):    # first column
+                    cur_sub = np.array([in_img[i-1, j+1], in_img[i-1, j], in_img[i-1, j+1], in_img[i, j+1], in_img[i, j], in_img[i, j+1], in_img[i-1, j+1], in_img[i-1, j], in_img[i-1, j+1]])
+                elif (j == (height-1)): # last column
+                    cur_sub = np.array([in_img[i-1, j-1], in_img[i-1, j], in_img[i-1, j-1], in_img[i, j-1], in_img[i, j], in_img[i, j-1], in_img[i-1, j-1], in_img[i-1, j], in_img[i-1, j-1]])
+                else:   # rest of columns
+                    cur_sub = np.array([in_img[i-1, j-1], in_img[i-1, j], in_img[i-1, j+1], in_img[i, j-1], in_img[i, j], in_img[i, j+1], in_img[i-1, j-1], in_img[i-1, j], in_img[i-1, j+1]])
             else:   # rest of rows
                 if (j == 0):    # first column
                     cur_sub = np.array([in_img[i-1, j+1], in_img[i-1, j], in_img[i-1, j+1], in_img[i, j+1], in_img[i, j], in_img[i, j+1], in_img[i+1, j+1], in_img[i+1, j], in_img[i+1, j+1]])
@@ -135,7 +141,25 @@ def getOriginalImgSubmatrices(in_img: cv.Mat) -> pd.DataFrame:
                     cur_sub = np.array([in_img[i-1, j-1], in_img[i-1, j], in_img[i-1, j-1], in_img[i, j-1], in_img[i, j], in_img[i, j-1], in_img[i+1, j-1], in_img[i+1, j], in_img[i+1, j-1]])
                 else:   # rest of columns
                     cur_sub = np.array([in_img[i-1, j-1], in_img[i-1, j], in_img[i-1, j+1], in_img[i, j-1], in_img[i, j], in_img[i, j+1], in_img[i+1, j-1], in_img[i+1, j], in_img[i+1, j+1]])
-    return None # TODO return something
+            sub_list.append(cur_sub)
+
+    return pd.DataFrame(np.array(sub_list, dtype=np.uint8))
+
+def getFilteredImgSubmatrices(in_img: cv.Mat) -> pd.DataFrame:
+    """Return the filtered image resulting submatrix (actually just a pixel)"""
+    # shape[0] is the image height, shape[1] is the image width
+    (height, width) = in_img.shape
+    # List which will store the submatrices
+    sub_list = []
+
+    # For the filtered images, just the central pixel of the original submatrices is needed
+    # This means that only in_img[i, j] is needed
+    for i in range(0, height):  # loop through rows
+        for j in range(0, width):   # loop through columns
+            cur_sub = np.array([in_img[i, j]])
+            sub_list. append(cur_sub)
+
+    return pd.DataFrame(np.array(sub_list, dtype=np.uint8))
 ## End of subimage section
 
 # Show a message if the script is run by itself
