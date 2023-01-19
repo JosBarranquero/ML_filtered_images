@@ -7,13 +7,10 @@ import math
 def lowPassFilter(in_file: str, out_file: str, size: int = 3, type: int = 1):
     """This function applies a low pass filter to a grayscale image. The resulting image is then saved to disk"""
     # Reading the input image
-    original = cv.imread(in_file, cv.IMREAD_UNCHANGED)
+    original = cv.imread(in_file, cv.IMREAD_GRAYSCALE)
 
     if original is None:    # If image wasn't read, then the file doesn't exist
         raise FileNotFoundError('Image \'{0}\' not found'.format(in_file))
-
-    if original.ndim == 3:   # If it's a color image, raise an error
-        raise RuntimeError('Image \'{0}\' is in color!'.format(in_file))
 
     # Creating the matrix filter (sizeXsize)
     filter = np.ones((size, size))
@@ -35,17 +32,14 @@ def lowPassFilter(in_file: str, out_file: str, size: int = 3, type: int = 1):
 def highPassFilter(in_file: str, out_file: str, size: int = 3):
     """This function applies a high pass filter to a grayscale image. The resulting image is then saved to disk"""
     # Reading the input image
-    original = cv.imread(in_file, cv.IMREAD_UNCHANGED)
+    original = cv.imread(in_file, cv.IMREAD_GRAYSCALE)
 
     if original is None:    # If image wasn't read, then the file doesn't exist
         raise FileNotFoundError('Image \'{0}\' not found'.format(in_file))
 
-    if original.ndim == 3:   # If it's a color image, raise an error
-        raise RuntimeError('Image \'{0}\' is in color!'.format(in_file))
-
     # Creating the matrix filter (sizeXsize)
     filter = -1/size**2 * np.ones((size, size))
-    filter[math.ceil(size/2), math.ceil(size/2)] += 1.0
+    filter[math.floor(size/2), math.floor(size/2)] += 1.0
 
     # Applying the filter
     # Second parameter = -1 : keeps the same colordepth
@@ -57,13 +51,10 @@ def highPassFilter(in_file: str, out_file: str, size: int = 3):
 def medianFilter(in_file: str, out_file: str, size: int = 3):
     """This function applies a median filter to a grayscale image. The resulting image is then saved to disk"""
     # Reading the input image
-    original = cv.imread(in_file, cv.IMREAD_UNCHANGED)
+    original = cv.imread(in_file, cv.IMREAD_GRAYSCALE)
     
     if original is None:    # If image wasn't read, then the file doesn't exist
         raise FileNotFoundError('Image \'{0}\' not found'.format(in_file))
-
-    if original.ndim == 3:   # If it's a color image, raise an error
-        raise RuntimeError('Image \'{0}\' is in color!'.format(in_file))
 
     # Applying mediang filter (sizeXsize)
     result = cv.medianBlur(original, size)
@@ -74,13 +65,10 @@ def medianFilter(in_file: str, out_file: str, size: int = 3):
 def hSobelFilter(in_file: str, out_file: str, size: int = 3):
     """This function applies a horizontal Sobel filter to a grayscale image. The resulting image is then saved to sisk"""
     # Reading the input image
-    original = cv.imread(in_file, cv.IMREAD_UNCHANGED)
+    original = cv.imread(in_file, cv.IMREAD_GRAYSCALE)
 
     if original is None:    # If image wasn't read, then the file doesn't exist
         raise FileNotFoundError('Image \'{0}\' not found'.format(in_file))
-
-    if original.ndim == 3:   # If it's a color image, raise an error
-        raise RuntimeError('Image \'{0}\' is in color!'.format(in_file))
 
     # Applying horizontal Sobel filter (sizeXsize)
     result = cv.Sobel(original, -1, 1, 0, ksize=size)
@@ -91,13 +79,10 @@ def hSobelFilter(in_file: str, out_file: str, size: int = 3):
 def vSobelFilter(in_file: str, out_file: str, size: int = 3):
     """This function applies a vertical Sobel filter to a grayscale image. The resulting image is then saved to sisk"""
     # Reading the input image
-    original = cv.imread(in_file, cv.IMREAD_UNCHANGED)
+    original = cv.imread(in_file, cv.IMREAD_GRAYSCALE)
 
     if original is None:    # If image wasn't read, then the file doesn't exist
         raise FileNotFoundError('Image \'{0}\' not found'.format(in_file))
-
-    if original.ndim == 3:   # If it's a color image, raise an error
-        raise RuntimeError('Image \'{0}\' is in color!'.format(in_file))
 
     # Applying vertical Sobel filter (sizeXsize)
     result = cv.Sobel(original, -1, 0, 1, ksize=size)
