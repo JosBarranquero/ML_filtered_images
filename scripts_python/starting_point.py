@@ -57,39 +57,8 @@ else:
     # Measuring load times
     t0 = time()
 
-    # First image is processed manually
-    i = 0
-    original_path = original_dir + original_files[i]
-    filtered_path = filtered_dir + filtered_files[i]
-
-    # Loading the image into memory
-    original_img = cv.imread(original_path, cv.IMREAD_GRAYSCALE)
-    filtered_img = cv.imread(filtered_path, cv.IMREAD_GRAYSCALE)
-
-    # Getting the physical size of the image (all of them must be the same size)
-    (height, width) = original_img.shape
-
-    # Converting the image from a heightXwidth matrix to a (height*width) vector
-    original_list.append(np.reshape(original_img, newshape=(1, np.product((height, width))))[0])
-    filtered_list.append(np.reshape(filtered_img, newshape=(1, np.product((height, width))))[0])
-
-    # The rest of images get processed automatically
-    for i in range(1, len(original_files)):
-        original_path = original_dir + original_files[i]
-        filtered_path = filtered_dir + filtered_files[i]
-
-        # Loading the image into memory
-        original_img = cv.imread(original_path, cv.IMREAD_GRAYSCALE)
-        filtered_img = cv.imread(filtered_path, cv.IMREAD_GRAYSCALE)
-
-        # Converting the image from a heightXwidth matrix to a (height*width) vector
-        original_list.append(np.reshape(original_img, newshape=(1, np.product((height, width))))[0])
-        filtered_list.append(np.reshape(filtered_img, newshape=(1, np.product((height, width))))[0])
-
-    # Lists to Pandas DataFrame conversion
-    df_original = pd.DataFrame(np.array(original_list, dtype=np.uint8))
-    df_filtered = pd.DataFrame(np.array(filtered_list, dtype=np.uint8))
-
+    # Loading original and filtered images into memory
+    df_original, df_filtered, height, width = fu.loadImages(original_dir, original_files, filtered_dir, filtered_files, submatrix=False)
     print("Loading Time:", round(time()-t0, 3), "s")
 
     # Saving to a pickle file
@@ -107,7 +76,7 @@ X_train, X_test, y_train, y_test = train_test_split(df_original, df_filtered, te
 
 # Linear Regressor Training
 regressor = LinearRegression()
-# Regression Tree Training
+# Support Vector Regression
 # regressor = svm.SVR(kernel='linear', C=100.0)
 t0 = time()     # To check how long it takes to train
 regressor.fit(X_train, y_train)

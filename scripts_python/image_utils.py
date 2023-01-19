@@ -122,25 +122,52 @@ def getOriginalImgSubmatrices(in_img: cv.Mat) -> pd.DataFrame:
             cur_sub = []    # current iteration submatrix
             if (i == 0):    # first row
                 if (j == 0):    # first column
-                    cur_sub = np.array([in_img[i+1, j+1], in_img[i+1, j], in_img[i+1, j+1], in_img[i, j+1], in_img[i, j], in_img[i, j+1], in_img[i+1, j+1], in_img[i+1, j], in_img[i+1, j+1]])
-                elif (j == (height-1)): # last column
-                    cur_sub = np.array([in_img[i+1, j-1], in_img[i+1, j], in_img[i+1, j-1], in_img[i, j-1], in_img[i, j], in_img[i, j-1], in_img[i+1, j-1], in_img[i+1, j], in_img[i+1, j-1]])
+                    cur_sub = np.array(
+                        [in_img[i+1, j+1], in_img[i+1, j], in_img[i+1, j+1],
+                        in_img[i, j+1], in_img[i, j], in_img[i, j+1],
+                        in_img[i+1, j+1], in_img[i+1, j], in_img[i+1, j+1]])
+                elif (j == (width-1)): # last column
+                    cur_sub = np.array(
+                        [in_img[i+1, j-1], in_img[i+1, j], in_img[i+1, j-1],
+                        in_img[i, j-1], in_img[i, j], in_img[i, j-1],
+                        in_img[i+1, j-1], in_img[i+1, j], in_img[i+1, j-1]])
                 else:   # rest of columns
-                    cur_sub = np.array([in_img[i+1, j-1], in_img[i+1, j], in_img[i+1, j+1], in_img[i, j-1], in_img[i, j], in_img[i, j+1], in_img[i+1, j-1], in_img[i+1, j], in_img[i+1, j+1]])
+                    cur_sub = np.array(
+                        [in_img[i+1, j-1], in_img[i+1, j], in_img[i+1, j+1],
+                        in_img[i, j-1], in_img[i, j], in_img[i, j+1],
+                        in_img[i+1, j-1], in_img[i+1, j], in_img[i+1, j+1]])
             elif (i == (height-1)): # last row
                 if (j == 0):    # first column
-                    cur_sub = np.array([in_img[i-1, j+1], in_img[i-1, j], in_img[i-1, j+1], in_img[i, j+1], in_img[i, j], in_img[i, j+1], in_img[i-1, j+1], in_img[i-1, j], in_img[i-1, j+1]])
-                elif (j == (height-1)): # last column
-                    cur_sub = np.array([in_img[i-1, j-1], in_img[i-1, j], in_img[i-1, j-1], in_img[i, j-1], in_img[i, j], in_img[i, j-1], in_img[i-1, j-1], in_img[i-1, j], in_img[i-1, j-1]])
+                    cur_sub = np.array(
+                        [in_img[i-1, j+1], in_img[i-1, j], in_img[i-1, j+1],
+                        in_img[i, j+1], in_img[i, j], in_img[i, j+1],
+                        in_img[i-1, j+1], in_img[i-1, j], in_img[i-1, j+1]])
+                elif (j == (width-1)): # last column
+                    cur_sub = np.array(
+                        [in_img[i-1, j-1], in_img[i-1, j], in_img[i-1, j-1],
+                        in_img[i, j-1], in_img[i, j], in_img[i, j-1],
+                        in_img[i-1, j-1], in_img[i-1, j], in_img[i-1, j-1]])
                 else:   # rest of columns
-                    cur_sub = np.array([in_img[i-1, j-1], in_img[i-1, j], in_img[i-1, j+1], in_img[i, j-1], in_img[i, j], in_img[i, j+1], in_img[i-1, j-1], in_img[i-1, j], in_img[i-1, j+1]])
+                    cur_sub = np.array(
+                        [in_img[i-1, j-1], in_img[i-1, j], in_img[i-1, j+1],
+                        in_img[i, j-1], in_img[i, j], in_img[i, j+1],
+                        in_img[i-1, j-1], in_img[i-1, j], in_img[i-1, j+1]])
             else:   # rest of rows
                 if (j == 0):    # first column
-                    cur_sub = np.array([in_img[i-1, j+1], in_img[i-1, j], in_img[i-1, j+1], in_img[i, j+1], in_img[i, j], in_img[i, j+1], in_img[i+1, j+1], in_img[i+1, j], in_img[i+1, j+1]])
-                elif (j == (height-1)): # last column
-                    cur_sub = np.array([in_img[i-1, j-1], in_img[i-1, j], in_img[i-1, j-1], in_img[i, j-1], in_img[i, j], in_img[i, j-1], in_img[i+1, j-1], in_img[i+1, j], in_img[i+1, j-1]])
+                    cur_sub = np.array(
+                        [in_img[i-1, j+1], in_img[i-1, j], in_img[i-1, j+1],
+                        in_img[i, j+1], in_img[i, j], in_img[i, j+1],
+                        in_img[i+1, j+1], in_img[i+1, j], in_img[i+1, j+1]])
+                elif (j == (width-1)): # last column
+                    cur_sub = np.array(
+                        [in_img[i-1, j-1], in_img[i-1, j], in_img[i-1, j-1],
+                        in_img[i, j-1], in_img[i, j], in_img[i, j-1],
+                        in_img[i+1, j-1], in_img[i+1, j], in_img[i+1, j-1]])
                 else:   # rest of columns
-                    cur_sub = np.array([in_img[i-1, j-1], in_img[i-1, j], in_img[i-1, j+1], in_img[i, j-1], in_img[i, j], in_img[i, j+1], in_img[i+1, j-1], in_img[i+1, j], in_img[i+1, j+1]])
+                    cur_sub = np.array(
+                        [in_img[i-1, j-1], in_img[i-1, j], in_img[i-1, j+1],
+                        in_img[i, j-1], in_img[i, j], in_img[i, j+1],
+                        in_img[i+1, j-1], in_img[i+1, j], in_img[i+1, j+1]])
             sub_list.append(cur_sub)
 
     return pd.DataFrame(np.array(sub_list, dtype=np.uint8))
@@ -161,6 +188,44 @@ def getFilteredImgSubmatrices(in_img: cv.Mat) -> pd.DataFrame:
 
     return pd.DataFrame(np.array(sub_list, dtype=np.uint8))
 ## End of subimage section
+
+## Start of rebuild image section
+def rebuildImages(pixels, height: int, width: int) -> list[cv.Mat]:
+    """This function rebuilds a list of images"""
+    num_pixels = height * width
+    img_list = []
+
+    for i in range(0, len(pixels.values), num_pixels):
+        cur_pixels = pixels.values[i:(i+num_pixels)]
+        cur_img = rebuildSingleImage(cur_pixels, height, width)
+        img_list.append(cur_img)
+
+    return img_list
+
+def rebuildSingleImage(pixels: np.array, height: int, width: int) -> cv.Mat:
+    """This function rebuilds an image, heightXwidth in size with its pixels"""
+    cur_pixel = 0
+    rebuilt_img = np.zeros((height, width), dtype=np.uint8)
+
+    for i in range(0, height):  # loop through rows 
+        for j in range(0, width):   # loop through columns
+            rebuilt_img[i, j] = pixels[cur_pixel]
+            cur_pixel += 1
+
+    return rebuilt_img
+## End of rebuild image section
+
+def predictionProcessing(pred: np.array) -> pd.DataFrame:
+    """This function corrects any out of bound values for np.uint8 and returns the values as a DataFrame"""
+    # Checking for underflow and overflow
+    for i in range(0, len(pred)):
+        if (pred[i] < 0):
+            pred[i] = np.array([0])
+        elif (pred[i] > 255):
+            pred[i] = np.array([255])
+
+    # Converting the predictions into a DataFrame
+    return pd.DataFrame(pred).astype(np.uint8)
 
 # Show a message if the script is run by itself
 if __name__ == '__main__':
