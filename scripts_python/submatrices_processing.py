@@ -3,13 +3,14 @@ import file_utils as fu
 import image_utils as iu
 from sklearn.linear_model import LinearRegression
 from sklearn import svm
+from sklearn.tree import DecisionTreeRegressor
 from sklearn.metrics import mean_squared_error
 
-# Pickle filenames and options to save and load
-original_pkl = 'original-eng.pkl'
-filtered_pkl = 'filtered-eng.pkl'
-save_to_pkl = False
-load_fr_pkl = False
+# Pickle options to save and load
+save_model_pkl = False
+save_images_pkl = False
+load_model_pkl = False
+load_images_pkl = False
 
 # Directories
 original_dir = './originales/'
@@ -21,39 +22,63 @@ img_ext = '.bmp'
 filter_ext = '-low' + img_ext
 pred_ext = 'pred-{0}'
 
-# Image characteristics
-width = 0
-height = 0
+if load_images_pkl:
+    t0 = time()
+    
+    height, width, X_train, y_train, X_test, y_test = fu.loadImgPkl()
 
-# Recovering the file names to process
-original_files = fu.fileList(original_dir, img_ext)
-filtered_files = fu.fileList(filtered_dir, filter_ext)
+    if X_test is None:
+        raise RuntimeError('Pickle file not found')
 
-# Check the number of files
-if (len(original_files) != len(filtered_files)):
-    raise RuntimeError('Number of originals and filtered images not matching')
+    print("Loading Time (pickle):", round(time()-t0, 3), "s")
+else:
+    # Image characteristics
+    width = 0
+    height = 0
 
-# Separate images in training and test sets
-test_percent = 0.05
-original_train_files, original_test_files, filtered_train_files, filtered_test_files = fu.trainTestSplit(
-    original_files, filtered_files, test_percent, fixed_state=False)
+    # Recovering the file names to process
+    original_files = fu.fileList(original_dir, img_ext)
+    filtered_files = fu.fileList(filtered_dir, filter_ext)
 
-# Measuring load times
-t0 = time()
+    # Check the number of files
+    if (len(original_files) != len(filtered_files)):
+        raise RuntimeError('Number of originals and filtered images not matching')
 
-# Loading training and test images into memory
-X_train, y_train, height, width = fu.loadImages(original_dir, original_train_files, filtered_dir, filtered_train_files)
-X_test, y_test, height, width = fu.loadImages(original_dir, original_test_files, filtered_dir, filtered_test_files)
+    # Separate images in training and test sets
+    test_percent = 0.05
+    original_train_files, original_test_files, filtered_train_files, filtered_test_files = fu.trainTestSplit(
+        original_files, filtered_files, test_percent, fixed_state=False)
 
-print("Loading Time (regular):", round(time()-t0, 3), "s")
+    # Measuring load times
+    t0 = time()
 
-# Linear Regressor Training
-regressor = LinearRegression()
-# Support Vector Regression
-# regressor = svm.LinearSVR(C=5.0)
-t0 = time()     # To check how long it takes to train
-regressor.fit(X_train, y_train)
-print("Training Time:", round(time()-t0, 3), "s")
+    # Loading training and test images into memory
+    X_train, y_train, height, width = fu.loadImages(original_dir, original_train_files, filtered_dir, filtered_train_files)
+    X_test, y_test, height, width = fu.loadImages(original_dir, original_test_files, filtered_dir, filtered_test_files)
+
+    print("Loading Time (regular):", round(time()-t0, 3), "s")
+
+    if save_images_pkl:
+        fu.saveImgPkl(height, width, X_train, y_train, X_test, y_test)
+
+if load_model_pkl:
+    regressor = fu.loadModelPkl()
+
+    if regressor is None:
+        raise RuntimeError('Pickle file not found')
+else:
+    # Linear Regressor Training
+    regressor = LinearRegression()
+    # Support Vector Regression
+    # regressor = svm.LinearSVR(C=5.0)
+    # Decission Tree Regression
+    # regressor = DecisionTreeRegressor()
+    t0 = time()     # To check how long it takes to train
+    regressor.fit(X_train, y_train)
+    print("Training Time:", round(time()-t0, 3), "s")
+
+    if save_model_pkl:
+        fu.saveModelPkl(regressor)
 
 # Testing the regressor
 t0 = time()

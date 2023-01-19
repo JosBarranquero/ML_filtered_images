@@ -3,7 +3,15 @@ import random
 import cv2 as cv
 import pandas as pd
 import numpy as np
+from joblib import dump, load
 import image_utils as iu
+
+model_pkl = 'trained.pkl'
+dim_pkl = 'dimensions.pkl'
+X_train_pkl = 'xtrain.pkl'
+X_test_pkl = 'xtest.pkl'
+y_train_pkl = 'ytrain.pkl'
+y_test_pkl = 'ytest.pkl'
 
 def loadImages(original_dir: str, original_files: list[str], filtered_dir: str, filtered_files: list[str], submatrix: bool = True) -> tuple[pd.DataFrame, pd.DataFrame, int, int]:
     """This function loads the images stored in original_dir + original_files[i] and filtered_dir + filtered_files[i]
@@ -93,7 +101,40 @@ def cleanDirectory(directory: str, extension: str = '.bmp'):
         # Only counting files ending in extension
         if file.endswith(extension):
             os.remove(directory + file)
-    
+
+def saveImgPkl(height: int, width: int, X_train: pd.DataFrame, y_train: pd.DataFrame, X_test: pd.DataFrame, y_test: pd.DataFrame):
+    """Saves image datasets to disk"""
+    dump((height, width), dim_pkl)
+    X_train.to_pickle(X_train_pkl)
+    y_train.to_pickle(y_train_pkl)
+    X_test.to_pickle(X_test_pkl)
+    y_test.to_pickle(y_test_pkl)
+
+def saveModelPkl(regressor, filename: str = model_pkl):
+    """Saves trained model to disk"""
+    dump(regressor, filename)    
+
+def loadImgPkl():
+    """Loads image datasets from disk"""
+    (height, width) = 0, 0
+    X_train = None
+    y_train = None
+    X_test = None
+    y_test = None
+
+    if fileExists(dim_pkl) and fileExists(X_train_pkl) and fileExists(y_train_pkl) and fileExists(X_test_pkl) and fileExists(y_test_pkl):
+        (height, width) = load(dim_pkl)
+        X_train = pd.read_pickle(X_train_pkl)
+        y_train = pd.read_pickle(y_train_pkl)
+        X_test = pd.read_pickle(X_test_pkl)
+        y_test = pd.read_pickle(y_test_pkl)
+
+    return height, width, X_train, y_train, X_test, y_test
+
+def loadModelPkl(filename: str = model_pkl):
+    """Loads trained model from disk"""
+    return load(filename) if fileExists(filename) else None
+
 def fileExists(file_name: str) -> bool:
     """This function checks if a given file exists"""
     return os.path.isfile(file_name)

@@ -4,6 +4,8 @@
 *.png
 *.gif
 *.bmp
+
+# Directories
 filtradas/
 originales/
 imagenes_iniciales/
@@ -12,6 +14,9 @@ explicaciones/
 
 # Pandas
 *.pkl
+
+# Trash
+test*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

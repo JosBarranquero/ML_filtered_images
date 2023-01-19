@@ -8,6 +8,7 @@ To properly run this project, the following software must be installed:
  - opencv-contrib-python (v4.6.0.66 and up)
  - numpy (v1.23.4 and up)
  - pandas (v1.5.2 and up)
+ - joblib (v1.2.0 and up)
 
 Except for Python itself, packages are refered to by their name in pip.
 Although some Matlab code is provided, it's not really used in this project and it's only included as legacy code.
