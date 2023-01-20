@@ -19,8 +19,7 @@ def lowPassFilter(in_file: str, out_file: str, size: int = 3, type: int = 1):
     elif (type == 2):   # Type 2 filter
         filter = np.array([[0.0625, 0.125, 0.0625], [0.125, 0.25, 0.125], [0.0625, 0.125, 0.0625]])
     elif (type == 3):   # Type 3 filter
-        filter = np.zeros((size, size))
-        filter[math.ceil(size/2), math.ceil(size/2)] = 1.0
+        filter = np.array([[0, 0.125, 0], [0.125, 0.5, 0.125], [0, 0.125, 0]])
 
     # Applying the filter
     # Second parameter = -1 : keeps the same colordepth
