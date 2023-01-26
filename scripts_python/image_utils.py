@@ -1,6 +1,7 @@
 import cv2 as cv
 import numpy as np
 import pandas as pd
+from skimage.metrics import structural_similarity, mean_squared_error, peak_signal_noise_ratio, normalized_mutual_information
 import math
 
 ## Start of image filters section
@@ -210,6 +211,40 @@ def predictionProcessing(pred: np.array) -> pd.DataFrame:
 
     # Converting the predictions into a DataFrame
     return pd.DataFrame(pred).astype(np.uint8)
+
+## Start of image similarity measurement section
+def getSSIM(ref: cv.Mat, test: cv.Mat) -> tuple[np.float64, cv.Mat]:
+    """This function calculates the structural similarity index, which indicates how similar images ref and test are.
+    0 indicates totally dissimilar images
+    1 indicates identical images
+    It also returns a difference image
+    """
+    (ssim, diff) = structural_similarity(ref, test, full=True)
+    
+    # diff is returned as a float array with values in the [0, 1] range
+    # Conversion to uint8 is need to be able to show or save the image
+    diff = (diff * 255).astype("uint8")
+
+    return (ssim, diff)
+
+def getPSNR(ref: cv.Mat, test: cv.Mat) -> np.float64:
+    """Calculates the peak signal to noise ratio of two images
+    Lower values (potentially negative) indicate dissimilarity
+    Higher values (potentially infinity) indicate similarity
+    """
+    return peak_signal_noise_ratio(ref, test)
+
+def getNMI(ref: cv.Mat, test: cv.Mat) -> np.float64:
+    """Calculates the normalized mutual information of two images
+    1 indicates uncorrelated images
+    2 indicates correlated images
+    """
+    return normalized_mutual_information(ref, test)
+
+def getMSE(ref: cv.Mat, test: cv.Mat) -> np.float64:
+    """Calculates the mean squared error of two images"""
+    return mean_squared_error(ref, test)
+## End of image similarity measurement section
 
 # Show a message if the script is run by itself
 if __name__ == '__main__':

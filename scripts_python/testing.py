@@ -6,8 +6,8 @@ import cv2 as cv
 import file_utils as fu
 import image_utils as iu
 
-def main(argv):
-    script_name = sys.argv[0]
+def main(script_name, argv):
+    # TODO: change argument parsing
     help = script_name + ' [-m <trainedModel>] -i <image>'
     file_name = None
     model_name = None
@@ -46,10 +46,14 @@ def main(argv):
     # Loading original image into memory as a grayscale image
     image = cv.imread(file_name, cv.IMREAD_GRAYSCALE)
 
+    # If image wasn't read, then the file doesn't exist
+    if image is None:
+        raise FileNotFoundError('Image \'{0}\' not found'.format(file_name))
+
     # Image characteristics
     (height, width) = image.shape
 
-    cv.imwrite(predict_dir+image_name+image_ext, image)
+    cv.imwrite(predict_dir + image_name + image_ext, image)
 
     # For testing purposes, apply the same transformation the regressor is trying to predict
     iu.hSobelFilter(file_name, predict_dir + filt_name)
@@ -69,4 +73,4 @@ def main(argv):
     # TODO: show images in imshow for easy comparison
 
 if __name__ == "__main__":
-   main(sys.argv[1:])
+   main(sys.argv[0], sys.argv[1:])
