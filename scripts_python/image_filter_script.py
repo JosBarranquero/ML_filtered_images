@@ -13,6 +13,9 @@ high_filter = True
 median_filter = True
 hsobel_filter = True
 vsobel_filter = True
+gaussian_filter = True
+canny_filter = True
+laplace_filter = True
 
 input_path = './originales/'
 output_path  = './filtradas/'
@@ -48,3 +51,18 @@ for i in range(1, num_images + 1):
         output_vsobel = '{0}imagen{1}-vsobel.bmp'.format(output_path, i)
         if (not fu.fileExists(output_vsobel)):     # Only process if the output file doesn't already exist
             iu.vSobelFilter(input, output_vsobel)
+
+    if gaussian_filter:
+        output_gaussian = '{0}imagen{1}-gaussian.bmp'.format(output_path, i)
+        if (not fu.fileExists(output_gaussian)):     # Only process if the output file doesn't already exist
+            iu.gaussianFilter(input, output_gaussian)
+
+    if canny_filter:
+        output_canny = '{0}imagen{1}-canny.bmp'.format(output_path, i)
+        if (not fu.fileExists(output_canny)):     # Only process if the output file doesn't already exist
+            iu.cannyFilter(input, output_canny)
+
+    if laplace_filter:
+        output_laplace = '{0}imagen{1}-laplace.bmp'.format(output_path, i)
+        if (not fu.fileExists(output_laplace)):     # Only process if the output file doesn't already exist
+            iu.laplaceFilter(input, output_laplace)

@@ -89,6 +89,50 @@ def vSobelFilter(in_file: str, out_file: str, size: int = 3):
 
     # Save it to disk
     cv.imwrite(out_file, result)
+
+def gaussianFilter(in_file: str, out_file: str, size: int = 3):
+    """This function applies a Gaussian blur filter to a grayscale image. The resulting image is then saved to sisk"""
+    # Reading the input image
+    original = cv.imread(in_file, cv.IMREAD_GRAYSCALE)
+
+    if original is None:    # If image wasn't read, then the file doesn't exist
+        raise FileNotFoundError('Image \'{0}\' not found'.format(in_file))
+
+    # Applying Gaussian filter (sizeXsize)
+    result = cv.GaussianBlur(original, (size, size), sigmaX=0)  # if sigmaX = 0, it's calculated from the kernel size
+
+    # Save it to disk
+    cv.imwrite(out_file, result)
+
+def cannyFilter(in_file: str, out_file: str, low_thres: int = 100, up_thres: int = 175):
+    """This function applies a Canny filter to a grayscale image. The resulting image is then saved to sisk
+    low_thres is the lower threshold (gray value)
+    up_thres is the upper threshold (gray value)
+    """
+    # Reading the input image
+    original = cv.imread(in_file, cv.IMREAD_GRAYSCALE)
+
+    if original is None:    # If image wasn't read, then the file doesn't exist
+        raise FileNotFoundError('Image \'{0}\' not found'.format(in_file))
+
+    # Applying Canny filter 
+    result = cv.Canny(original, low_thres, up_thres) 
+
+    # Save it to disk
+    cv.imwrite(out_file, result)
+
+def laplaceFilter(in_file: str, out_file: str, size: int = 3):
+    # Reading the input image
+    original = cv.imread(in_file, cv.IMREAD_GRAYSCALE)
+
+    if original is None:    # If image wasn't read, then the file doesn't exist
+        raise FileNotFoundError('Image \'{0}\' not found'.format(in_file))
+
+    # Applying Canny filter 
+    result = cv.Laplacian(original, ddepth=-1, ksize=size)  # ddepth = -1 makes no changes to original color depth
+
+    # Save it to disk
+    cv.imwrite(out_file, result)
 ## End of image filters section
 
 ## Start of subimage section

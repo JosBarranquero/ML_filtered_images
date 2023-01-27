@@ -42,6 +42,7 @@ def main(script_name, argv):
     predict_dir = './prediccion/'
     pred_name = image_name + '-p' + image_ext
     filt_name = image_name + '-f' + image_ext
+    diff_name = image_name + '-d' + image_ext
 
     # Loading original image into memory as a grayscale image
     image = cv.imread(file_name, cv.IMREAD_GRAYSCALE)
@@ -56,7 +57,8 @@ def main(script_name, argv):
     cv.imwrite(predict_dir + image_name + image_ext, image)
 
     # For testing purposes, apply the same transformation the regressor is trying to predict
-    iu.hSobelFilter(file_name, predict_dir + filt_name)
+    iu.gaussianFilter(file_name, predict_dir + filt_name)
+    filtered = cv.imread(predict_dir + filt_name, cv.IMREAD_GRAYSCALE)
 
     # Applying feature engineering
     df_image = iu.getOriginalImgSubmatrices(image)
@@ -71,6 +73,9 @@ def main(script_name, argv):
     fu.writeImages(predict_dir, pred_name, rebuilt_pred)
 
     # TODO: show images in imshow for easy comparison
+    ssim, diff = iu.getSSIM(filtered, rebuilt_pred[0])
+    print(ssim)
+    cv.imwrite(predict_dir + diff_name, diff)
 
 if __name__ == "__main__":
    main(sys.argv[0], sys.argv[1:])
