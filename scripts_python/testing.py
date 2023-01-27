@@ -5,33 +5,22 @@ from time import time
 import cv2 as cv
 import file_utils as fu
 import image_utils as iu
+import argparse
 
-def main(script_name, argv):
+def main():
     # TODO: change argument parsing
-    help = script_name + ' [-m <trainedModel>] -i <image>'
-    file_name = None
-    model_name = None
-    try:
-        opts, args = getopt.getopt(argv,"hi:m:",["imgfile=","modfile="])
-    except getopt.GetoptError:
-        print(help)
-        sys.exit(2)
-    for opt, arg in opts:
-        if opt == '-h':
-            print (help)
-            sys.exit()
-        elif opt in ("-i", "--image"):
-            file_name = arg
-        elif opt in ("-m", "--model"):
-            model_name = arg
+    parser = argparse.ArgumentParser(description='Apply a filter to a image through a previously trained model')
+    parser.add_argument("-m", "--model", type=str, default="trained.pkl", help="Path to trained model")
+    parser.add_argument("-i", "--image", type=str, default=None, help="Path to image to process")
+    args = parser.parse_args()
+
+    file_name = args.image
+    model_name = args.model
 
     if file_name is None:
         raise RuntimeError('No image specified')
 
-    if model_name is None:  # default file
-        regressor = fu.loadModelPkl()
-    else:
-        regressor = fu.loadModelPkl(model_name)
+    regressor = fu.loadModelPkl(model_name)
 
     if regressor is None:
         raise RuntimeError('Trained model file not found')
@@ -78,4 +67,4 @@ def main(script_name, argv):
     cv.imwrite(predict_dir + diff_name, diff)
 
 if __name__ == "__main__":
-   main(sys.argv[0], sys.argv[1:])
+   main()
