@@ -75,7 +75,7 @@ else:
     t0 = time()     # To check how long it takes to train
     regressor.fit(X_train, y_train)
     print('Training Time:', round(time()-t0, 3), 's')
-
+    # TODO: try ensemble techniques
     if save_model_pkl:
         fu.saveModelPkl(regressor)
 
@@ -97,10 +97,12 @@ diff_imgs = list()
 
 # Similarity measurement
 for i in range(0, len(rebuilt_actual)):
-    mse = iu.getMSE(rebuilt_actual[i], rebuilt_pred[i])
-    ssim, diff = iu.getSSIM(rebuilt_actual[i], rebuilt_pred[i])
-    psnr = iu.getPSNR(rebuilt_actual[i], rebuilt_pred[i])
-    nmi = iu.getNMI(rebuilt_actual[i], rebuilt_pred[i])
+    current_actual = rebuilt_actual[i]
+    current_pred = rebuilt_pred[i]
+    mse = iu.getMSE(current_actual, current_pred)
+    ssim, diff = iu.getSSIM(current_actual, current_pred)
+    psnr = iu.getPSNR(current_actual, current_pred)
+    nmi = iu.getNMI(current_actual, current_pred)
     diff_imgs.append(diff)
     print('==== Image {0} ===='.format(i))
     print('MSE = {0}'.format(round(mse, 3)))

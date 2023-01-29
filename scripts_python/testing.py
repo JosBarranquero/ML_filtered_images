@@ -1,6 +1,4 @@
-import getopt
 import os
-import sys
 from time import time
 import cv2 as cv
 import file_utils as fu

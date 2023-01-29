@@ -6,7 +6,9 @@ import math
 
 ## Start of image filters section
 def lowPassFilter(in_file: str, out_file: str, size: int = 3, type: int = 1):
-    """This function applies a low pass filter to a grayscale image. The resulting image is then saved to disk"""
+    """This function applies a low pass filter to a grayscale image. The resulting image is then saved to disk
+    The size parameter only affects type = 1 masks
+    """
     # Reading the input image
     original = cv.imread(in_file, cv.IMREAD_GRAYSCALE)
 
@@ -29,8 +31,10 @@ def lowPassFilter(in_file: str, out_file: str, size: int = 3, type: int = 1):
     # Save it to disk
     cv.imwrite(out_file, result)
 
-def highPassFilter(in_file: str, out_file: str, size: int = 3):
-    """This function applies a high pass filter to a grayscale image. The resulting image is then saved to disk"""
+def highPassFilter(in_file: str, out_file: str, size: int = 3, sharpen: bool = False):
+    """This function applies a high pass filter to a grayscale image. The resulting image is then saved to disk
+    sharpen = True, adds the resulting image to the original one so the edges are sharpened
+    """
     # Reading the input image
     original = cv.imread(in_file, cv.IMREAD_GRAYSCALE)
 
@@ -46,7 +50,11 @@ def highPassFilter(in_file: str, out_file: str, size: int = 3):
     result = cv.filter2D(original, -1, filter)
 
     # Save it to disk
-    cv.imwrite(out_file, result)
+    if sharpen:
+        # The result gets added (and not substracted), because the center element (filter[math.floor(size/2), math.floor(size/2)]) is positive
+        cv.imwrite(out_file, original + result)
+    else:
+        cv.imwrite(out_file, result)
 
 def medianFilter(in_file: str, out_file: str, size: int = 3):
     """This function applies a median filter to a grayscale image. The resulting image is then saved to disk"""
@@ -63,7 +71,7 @@ def medianFilter(in_file: str, out_file: str, size: int = 3):
     cv.imwrite(out_file, result)
 
 def hSobelFilter(in_file: str, out_file: str, size: int = 3):
-    """This function applies a horizontal Sobel filter to a grayscale image. The resulting image is then saved to sisk"""
+    """This function applies a horizontal Sobel filter to a grayscale image. The resulting image is then saved to disk"""
     # Reading the input image
     original = cv.imread(in_file, cv.IMREAD_GRAYSCALE)
 
@@ -90,7 +98,7 @@ def vSobelFilter(in_file: str, out_file: str, size: int = 3):
     # Save it to disk
     cv.imwrite(out_file, result)
 
-def gaussianFilter(in_file: str, out_file: str, size: int = 3):
+def gaussianFilter(in_file: str, out_file: str, size: int = 3, sigmaX: float = 0):
     """This function applies a Gaussian blur filter to a grayscale image. The resulting image is then saved to sisk"""
     # Reading the input image
     original = cv.imread(in_file, cv.IMREAD_GRAYSCALE)
@@ -99,7 +107,9 @@ def gaussianFilter(in_file: str, out_file: str, size: int = 3):
         raise FileNotFoundError('Image \'{0}\' not found'.format(in_file))
 
     # Applying Gaussian filter (sizeXsize)
-    result = cv.GaussianBlur(original, (size, size), sigmaX=0)  # if sigmaX = 0, it's calculated from the kernel size
+    # if sigmaX = 0, it's calculated from the kernel size as follows: 
+    # sigmaX = 0.3*((size-1)*0.5 - 1) + 0.8
+    result = cv.GaussianBlur(original, (size, size), sigmaX=sigmaX)  
 
     # Save it to disk
     cv.imwrite(out_file, result)
@@ -122,6 +132,7 @@ def cannyFilter(in_file: str, out_file: str, low_thres: int = 100, up_thres: int
     cv.imwrite(out_file, result)
 
 def laplaceFilter(in_file: str, out_file: str, size: int = 3):
+    """This function applies a Laplacian filter to a grayscale image. The resulting image is then saved to disk"""
     # Reading the input image
     original = cv.imread(in_file, cv.IMREAD_GRAYSCALE)
 
@@ -130,6 +141,55 @@ def laplaceFilter(in_file: str, out_file: str, size: int = 3):
 
     # Applying Canny filter 
     result = cv.Laplacian(original, ddepth=-1, ksize=size)  # ddepth = -1 makes no changes to original color depth
+
+    # Save it to disk
+    cv.imwrite(out_file, result)
+
+def bilateralFilter(in_file: str, out_file: str, size: int = 3, sigma: float = 250):
+    """This function applies a bilateral filter to a grayscale image. The resulting image is then saved to disk"""
+    # Reading the input image
+    original = cv.imread(in_file, cv.IMREAD_GRAYSCALE)
+
+    if original is None:    # If image wasn't read, then the file doesn't exist
+        raise FileNotFoundError('Image \'{0}\' not found'.format(in_file))
+
+    # Applying the filter
+    result = cv.bilateralFilter(original, d=size, sigmaColor=sigma, sigmaSpace=sigma)
+
+    # Save it to disk
+    cv.imwrite(out_file, result)
+
+def motionBlurFilter(in_file: str, out_file: str, size: int = 3):
+    """This function applies a motion blur filter to a grayscale image. The resulting image is then saved to disk"""
+    # Reading the input image
+    original = cv.imread(in_file, cv.IMREAD_GRAYSCALE)
+
+    if original is None:    # If image wasn't read, then the file doesn't exist
+        raise FileNotFoundError('Image \'{0}\' not found'.format(in_file))
+
+    filter = np.array([[0, 0, 0.32], [0.32, 0.33, 0.01], [0.01, 0, 0]])
+
+    # Applying the filter
+    # Second parameter = -1 : keeps the same colordepth
+    result = cv.filter2D(original, -1, filter)
+
+    # Save it to disk
+    cv.imwrite(out_file, result)
+
+def hybridFilter(in_file: str, out_file: str):
+    """This function applies a filter (thisbehaves like a mixture of low and high pass) to a grayscale image. The resulting image is then saved to disk"""
+    # Reading the input image
+    original = cv.imread(in_file, cv.IMREAD_GRAYSCALE)
+
+    if original is None:    # If image wasn't read, then the file doesn't exist
+        raise FileNotFoundError('Image \'{0}\' not found'.format(in_file))
+
+    # Creating the matrix filter (sizeXsize)
+    filter = np.array([[0.5, 0, -0.5], [0, 1, 0], [0.5, 0, -0.5]])
+
+    # Applying the filter
+    # Second parameter = -1 : keeps the same colordepth
+    result = cv.filter2D(original, -1, filter)
 
     # Save it to disk
     cv.imwrite(out_file, result)

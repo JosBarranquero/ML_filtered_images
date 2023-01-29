@@ -1,13 +1,7 @@
 import image_utils as iu
 import file_utils as fu
 
-# Processing options (disabled)
-# low_filter = False
-# high_filter = False
-# median_filter = False
-# hsobel_filter = False
-# vsobel_filter = False
-# Processing options (enabled)
+# Processing options
 low_filter = True
 high_filter = True
 median_filter = True
@@ -16,6 +10,9 @@ vsobel_filter = True
 gaussian_filter = True
 canny_filter = True
 laplace_filter = True
+bilateral_filter = True
+motionblur_filter = True
+hybrid_filter = True
 
 input_path = './originales/'
 output_path  = './filtradas/'
@@ -66,3 +63,18 @@ for i in range(1, num_images + 1):
         output_laplace = '{0}imagen{1}-laplace.bmp'.format(output_path, i)
         if (not fu.fileExists(output_laplace)):     # Only process if the output file doesn't already exist
             iu.laplaceFilter(input, output_laplace)
+
+    if bilateral_filter:
+        output_bilateral = '{0}imagen{1}-bilateral.bmp'.format(output_path, i)
+        if (not fu.fileExists(output_bilateral)):     # Only process if the output file doesn't already exist
+            iu.bilateralFilter(input, output_bilateral)
+
+    if motionblur_filter:
+        output_motion = '{0}imagen{1}-motion.bmp'.format(output_path, i)
+        if (not fu.fileExists(output_motion)):     # Only process if the output file doesn't already exist
+            iu.motionBlurFilter(input, output_motion)
+
+    if hybrid_filter:
+        output_hybrid = '{0}imagen{1}-hybrid.bmp'.format(output_path, i)
+        if (not fu.fileExists(output_hybrid)):     # Only process if the output file doesn't already exist
+            iu.hybridFilter(input, output_hybrid)
