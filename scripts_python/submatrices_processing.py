@@ -1,9 +1,7 @@
 from time import time
 import file_utils as fu
 import image_utils as iu
-from sklearn.linear_model import LinearRegression
-from sklearn import svm
-from sklearn.tree import DecisionTreeRegressor
+import regression_utils as ru
 
 # Pickle options to save and load
 save_model_pkl = False
@@ -61,27 +59,19 @@ else:
         fu.saveImgPkl(height, width, X_train, y_train, X_test, y_test)
 
 if load_model_pkl:
-    regressor = fu.loadModelPkl()
-
-    if regressor is None:
-        raise RuntimeError('Pickle file not found')
+    ru.loadRegressor()
 else:
-    # Linear Regressor Training
-    regressor = LinearRegression()
-    # Support Vector Regression
-    # regressor = svm.LinearSVR(C=5.0)
-    # Decission Tree Regression
-    # regressor = DecisionTreeRegressor()
+    # Creating the regressor
+    ru.createRegressor(ru.DECISSION_TREE, adaboost=False)
     t0 = time()     # To check how long it takes to train
-    regressor.fit(X_train, y_train)
+    ru.fitRegressor(X_train, y_train)
     print('Training Time:', round(time()-t0, 3), 's')
-    # TODO: try ensemble techniques
     if save_model_pkl:
-        fu.saveModelPkl(regressor)
+        ru.saveRegressor()
 
 # Testing the regressor
 t0 = time()
-y_pred = regressor.predict(X_test)
+y_pred = ru.predict(X_test)
 print('Predicting Time:', round(time()-t0, 3), 's')
 
 # Performing necessary processing
