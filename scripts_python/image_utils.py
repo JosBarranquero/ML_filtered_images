@@ -196,71 +196,33 @@ def hybridFilter(in_file: str, out_file: str):
 ## End of image filters section
 
 ## Start of subimage section
-def getOriginalImgSubmatrices(in_img: cv.Mat) -> pd.DataFrame:
-    """Return the original image sliced intro 3x3 submatrices necessary for later processing"""
-    # shape[0] is the image height, shape[1] is the image width
-    (height, width) = in_img.shape
+def getOriginalImgSubmatrices(in_img: cv.Mat, sub_size: int = 3) -> pd.DataFrame:
+    """Return the original image sliced into sub_sizeXsub_size submatrices necessary for later processing.
+    sub_size must be and odd integer
+    """
+    if sub_size % 2 == 0:
+        raise RuntimeError('The submatrix size must be odd')
+    
+    # Size of padding needed to be added
+    padding_size = int((sub_size - 1) / 2)
     # List which will store the submatrices
     sub_list = []
 
     # To create the submatrices, the default OpenCV BorderType behavior will be replicated
+    # To do this, padding needs to be added to the image
     # OpenCV BORDER_REFLECT_101 reflects the pixels in the following manner gfedcb|abcdefgh|gfedcba
-    # Hopefully, someday this code won't be so rough
-    for i in range(0, height):  # loop through rows 
-        for j in range(0, width):   # loop through columns
-            cur_sub = []    # current iteration submatrix
-            if (i == 0):    # first row
-                if (j == 0):    # first column
-                    cur_sub = np.array(
-                        [in_img[i+1, j+1], in_img[i+1, j], in_img[i+1, j+1],
-                        in_img[i, j+1], in_img[i, j], in_img[i, j+1],
-                        in_img[i+1, j+1], in_img[i+1, j], in_img[i+1, j+1]])
-                elif (j == (width-1)): # last column
-                    cur_sub = np.array(
-                        [in_img[i+1, j-1], in_img[i+1, j], in_img[i+1, j-1],
-                        in_img[i, j-1], in_img[i, j], in_img[i, j-1],
-                        in_img[i+1, j-1], in_img[i+1, j], in_img[i+1, j-1]])
-                else:   # rest of columns
-                    cur_sub = np.array(
-                        [in_img[i+1, j-1], in_img[i+1, j], in_img[i+1, j+1],
-                        in_img[i, j-1], in_img[i, j], in_img[i, j+1],
-                        in_img[i+1, j-1], in_img[i+1, j], in_img[i+1, j+1]])
-            elif (i == (height-1)): # last row
-                if (j == 0):    # first column
-                    cur_sub = np.array(
-                        [in_img[i-1, j+1], in_img[i-1, j], in_img[i-1, j+1],
-                        in_img[i, j+1], in_img[i, j], in_img[i, j+1],
-                        in_img[i-1, j+1], in_img[i-1, j], in_img[i-1, j+1]])
-                elif (j == (width-1)): # last column
-                    cur_sub = np.array(
-                        [in_img[i-1, j-1], in_img[i-1, j], in_img[i-1, j-1],
-                        in_img[i, j-1], in_img[i, j], in_img[i, j-1],
-                        in_img[i-1, j-1], in_img[i-1, j], in_img[i-1, j-1]])
-                else:   # rest of columns
-                    cur_sub = np.array(
-                        [in_img[i-1, j-1], in_img[i-1, j], in_img[i-1, j+1],
-                        in_img[i, j-1], in_img[i, j], in_img[i, j+1],
-                        in_img[i-1, j-1], in_img[i-1, j], in_img[i-1, j+1]])
-            else:   # rest of rows
-                if (j == 0):    # first column
-                    cur_sub = np.array(
-                        [in_img[i-1, j+1], in_img[i-1, j], in_img[i-1, j+1],
-                        in_img[i, j+1], in_img[i, j], in_img[i, j+1],
-                        in_img[i+1, j+1], in_img[i+1, j], in_img[i+1, j+1]])
-                elif (j == (width-1)): # last column
-                    cur_sub = np.array(
-                        [in_img[i-1, j-1], in_img[i-1, j], in_img[i-1, j-1],
-                        in_img[i, j-1], in_img[i, j], in_img[i, j-1],
-                        in_img[i+1, j-1], in_img[i+1, j], in_img[i+1, j-1]])
-                else:   # rest of columns
-                    cur_sub = np.array(
-                        [in_img[i-1, j-1], in_img[i-1, j], in_img[i-1, j+1],
-                        in_img[i, j-1], in_img[i, j], in_img[i, j+1],
-                        in_img[i+1, j-1], in_img[i+1, j], in_img[i+1, j+1]])
-            sub_list.append(cur_sub)
+    padded_img = cv.copyMakeBorder(in_img, top=padding_size, bottom=padding_size, left=padding_size, right=padding_size, borderType=cv.BORDER_REFLECT_101)
+
+    # shape[0] is the image height, shape[1] is the image width
+    (height, width) = padded_img.shape
+
+    for i in range(0, height - sub_size + 1):  # loop through rows 
+        for j in range(0, width - sub_size + 1):   # loop through columns
+            cur_sub = np.array(padded_img[i:i + sub_size, j:j + sub_size])    # current iteration submatrix
+            sub_list.append(np.reshape(cur_sub, newshape=(1, np.product((sub_size, sub_size))))[0])
 
     return pd.DataFrame(np.array(sub_list, dtype=np.uint8))
-
+    
 def getFilteredImgSubmatrices(in_img: cv.Mat) -> pd.DataFrame:
     """Return the filtered image resulting submatrix (actually just a pixel)"""
     # shape[0] is the image height, shape[1] is the image width

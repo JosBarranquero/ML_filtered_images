@@ -13,7 +13,7 @@ X_test_pkl = 'xtest.pkl'
 y_train_pkl = 'ytrain.pkl'
 y_test_pkl = 'ytest.pkl'
 
-def loadImages(original_dir: str, original_files: list[str], filtered_dir: str, filtered_files: list[str], submatrix: bool = True) -> tuple[pd.DataFrame, pd.DataFrame, int, int]:
+def loadImages(original_dir: str, original_files: list[str], filtered_dir: str, filtered_files: list[str], submatrix: bool = True, sub_size: int = 3) -> tuple[pd.DataFrame, pd.DataFrame, int, int]:
     """This function loads the images stored in original_dir + original_files[i] and filtered_dir + filtered_files[i]
     if submatrix is True, the images get divided in submatrices
     """
@@ -39,7 +39,7 @@ def loadImages(original_dir: str, original_files: list[str], filtered_dir: str, 
             # Applying "feature engineering"
             # Filters are applied convoluting a matrix
             # By getting the array of pixels that get convoluted with the matrix and its result, we may get better predictions
-            df_original = pd.concat([df_original, iu.getOriginalImgSubmatrices(original_img)])
+            df_original = pd.concat([df_original, iu.getOriginalImgSubmatrices(original_img, sub_size)])
             df_filtered = pd.concat([df_filtered, iu.getFilteredImgSubmatrices(filtered_img)])
         else:
             # Converting the image from a heightXwidth matrix to a (height*width) vector

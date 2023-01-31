@@ -3,6 +3,11 @@ import file_utils as fu
 import image_utils as iu
 import regression_utils as ru
 
+# Processing options
+regressor = ru.LINEAR
+adaboost = False
+sub_size = 3
+
 # Pickle options to save and load
 save_model_pkl = False
 save_images_pkl = False
@@ -44,14 +49,14 @@ else:
     # Separate images in training and test sets
     test_percent = 0.05
     original_train_files, original_test_files, filtered_train_files, filtered_test_files = fu.trainTestSplit(
-        original_files, filtered_files, test_percent, fixed_state=False)
+        original_files, filtered_files, test_percent)
 
     # Measuring load times
     t0 = time()
 
     # Loading training and test images into memory
-    X_train, y_train, height, width = fu.loadImages(original_dir, original_train_files, filtered_dir, filtered_train_files)
-    X_test, y_test, height, width = fu.loadImages(original_dir, original_test_files, filtered_dir, filtered_test_files)
+    X_train, y_train, height, width = fu.loadImages(original_dir, original_train_files, filtered_dir, filtered_train_files, sub_size=sub_size)
+    X_test, y_test, height, width = fu.loadImages(original_dir, original_test_files, filtered_dir, filtered_test_files, sub_size=sub_size)
 
     print('Loading Time (regular):', round(time()-t0, 3), 's')
 
@@ -62,7 +67,7 @@ if load_model_pkl:
     ru.loadRegressor()
 else:
     # Creating the regressor
-    ru.createRegressor(ru.DECISSION_TREE, adaboost=False)
+    ru.createRegressor(regressor, adaboost)
     t0 = time()     # To check how long it takes to train
     ru.fitRegressor(X_train, y_train)
     print('Training Time:', round(time()-t0, 3), 's')
