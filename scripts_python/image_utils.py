@@ -264,7 +264,6 @@ def rebuildSingleImage(pixels: np.array, height: int, width: int) -> cv.Mat:
             cur_pixel += 1
 
     return rebuilt_img
-## End of rebuild image section
 
 def predictionProcessing(pred: np.array) -> pd.DataFrame:
     """This function corrects any out of bound values for np.uint8 and returns the values as a DataFrame"""
@@ -277,6 +276,17 @@ def predictionProcessing(pred: np.array) -> pd.DataFrame:
 
     # Converting the predictions into a DataFrame
     return pd.DataFrame(pred).astype(np.uint8)
+## End of rebuild image section
+
+## Start of frequency domain section
+def fourierTransform(img: cv.Mat, shifted: bool = True):
+    """This function returns the 2D FFT of an image. If shifted is True, the zero frequency component will be brought to the center"""
+    f = np.fft.fft2(img)
+    if shifted:
+        f = np.fft.fftshift(f)
+
+    return 20*np.log(np.abs(f))
+## End of frequency domain section
 
 ## Start of image similarity measurement section
 def getSSIM(ref: cv.Mat, test: cv.Mat) -> tuple[np.float64, cv.Mat]:

@@ -2,6 +2,7 @@ from time import time
 import file_utils as fu
 import image_utils as iu
 import regression_utils as ru
+from matplotlib import pyplot as plt
 
 # Processing options
 regressor = ru.LINEAR
@@ -112,3 +113,17 @@ fu.cleanDirectory(predict_dir)
 fu.writeImages(predict_dir, pred_ext + img_ext, rebuilt_pred)
 fu.writeImages(predict_dir, pred_ext + '-actual' + img_ext, rebuilt_actual)
 fu.writeImages(predict_dir, pred_ext + '-diff' + img_ext, diff_imgs)
+
+# Fourier transform of the first image
+f_pred = iu.fourierTransform(rebuilt_pred[0])
+f_actual = iu.fourierTransform(rebuilt_actual[0])
+f_mse = iu.getMSE(f_pred, f_actual)
+
+print('===================')
+print('Spectrum MSE = {0}'.format(round(f_mse, 3)))
+
+plt.subplot(121), plt.imshow(f_pred, cmap = 'gray')
+plt.title('Predicted Spectrum'), plt.xticks([]), plt.yticks([])
+plt.subplot(122), plt.imshow(f_actual, cmap = 'gray')
+plt.title('Actual Spectrum'), plt.xticks([]), plt.yticks([])
+plt.show()

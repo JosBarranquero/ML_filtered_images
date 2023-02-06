@@ -4,6 +4,7 @@ import cv2 as cv
 import file_utils as fu
 import image_utils as iu
 import argparse
+from matplotlib import pyplot as plt
 
 def main():
     # TODO: change argument parsing
@@ -61,8 +62,21 @@ def main():
 
     # TODO: show images in imshow for easy comparison
     ssim, diff = iu.getSSIM(filtered, rebuilt_pred[0])
-    print(ssim)
+    print('Image SSIM = {0}'.format(round(ssim, 3)))
     cv.imwrite(predict_dir + diff_name, diff)
+
+
+    f_pred = iu.fourierTransform(rebuilt_pred[0])
+    f_actual = iu.fourierTransform(filtered)
+    f_mse = iu.getMSE(f_pred, f_actual)
+
+    print('Spectrum MSE = {0}'.format(round(f_mse, 3)))
+
+    plt.subplot(121), plt.imshow(f_pred, cmap = 'gray')
+    plt.title('Predicted Spectrum'), plt.xticks([]), plt.yticks([])
+    plt.subplot(122), plt.imshow(f_actual, cmap = 'gray')
+    plt.title('Actual Spectrum'), plt.xticks([]), plt.yticks([])
+    plt.show()
 
 if __name__ == "__main__":
    main()
