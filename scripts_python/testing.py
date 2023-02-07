@@ -72,11 +72,16 @@ def main():
 
     print('Spectrum MSE = {0}'.format(round(f_mse, 3)))
 
-    plt.subplot(121), plt.imshow(f_pred, cmap = 'gray')
+    plt.subplot(221), plt.imshow(rebuilt_pred[0], cmap = 'gray')
+    plt.title('Predicted Image'), plt.xticks([]), plt.yticks([])
+    plt.subplot(222), plt.imshow(filtered, cmap = 'gray')
+    plt.title('Actual Image'), plt.xticks([]), plt.yticks([])
+    plt.subplot(223), plt.imshow(f_pred, cmap = 'gray')
     plt.title('Predicted Spectrum'), plt.xticks([]), plt.yticks([])
-    plt.subplot(122), plt.imshow(f_actual, cmap = 'gray')
+    plt.subplot(224), plt.imshow(f_actual, cmap = 'gray')
     plt.title('Actual Spectrum'), plt.xticks([]), plt.yticks([])
     plt.show()
 
 if __name__ == "__main__":
    main()
+   

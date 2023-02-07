@@ -115,15 +115,22 @@ fu.writeImages(predict_dir, pred_ext + '-actual' + img_ext, rebuilt_actual)
 fu.writeImages(predict_dir, pred_ext + '-diff' + img_ext, diff_imgs)
 
 # Fourier transform of the first image
-f_pred = iu.fourierTransform(rebuilt_pred[0])
-f_actual = iu.fourierTransform(rebuilt_actual[0])
+first_pred = rebuilt_pred[0]
+first_actual = rebuilt_actual[0]
+f_pred = iu.fourierTransform(first_pred)
+f_actual = iu.fourierTransform(first_actual)
 f_mse = iu.getMSE(f_pred, f_actual)
 
 print('===================')
 print('Spectrum MSE = {0}'.format(round(f_mse, 3)))
 
-plt.subplot(121), plt.imshow(f_pred, cmap = 'gray')
+# Show the first image (prediction and actual) alongside their frequency spectrums
+plt.subplot(221), plt.imshow(first_pred, cmap = 'gray')
+plt.title('Predicted Image'), plt.xticks([]), plt.yticks([])
+plt.subplot(222), plt.imshow(first_actual, cmap = 'gray')
+plt.title('Actual Image'), plt.xticks([]), plt.yticks([])
+plt.subplot(223), plt.imshow(f_pred, cmap = 'gray')
 plt.title('Predicted Spectrum'), plt.xticks([]), plt.yticks([])
-plt.subplot(122), plt.imshow(f_actual, cmap = 'gray')
+plt.subplot(224), plt.imshow(f_actual, cmap = 'gray')
 plt.title('Actual Spectrum'), plt.xticks([]), plt.yticks([])
 plt.show()

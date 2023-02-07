@@ -177,7 +177,7 @@ def motionBlurFilter(in_file: str, out_file: str, size: int = 3):
     cv.imwrite(out_file, result)
 
 def hybridFilter(in_file: str, out_file: str):
-    """This function applies a filter (thisbehaves like a mixture of low and high pass) to a grayscale image. The resulting image is then saved to disk"""
+    """This function applies a filter (this behaves like a mixture of low and high pass) to a grayscale image. The resulting image is then saved to disk"""
     # Reading the input image
     original = cv.imread(in_file, cv.IMREAD_GRAYSCALE)
 
@@ -190,6 +190,20 @@ def hybridFilter(in_file: str, out_file: str):
     # Applying the filter
     # Second parameter = -1 : keeps the same colordepth
     result = cv.filter2D(original, -1, filter)
+
+    # Save it to disk
+    cv.imwrite(out_file, result)
+
+def histogramEq(in_file: str, out_file: str):
+    """This function equalizes the histogram of a grayscale image. The resulting image is then saved to disk"""
+    # Reading the input image
+    original = cv.imread(in_file, cv.IMREAD_GRAYSCALE)
+
+    if original is None:    # If image wasn't read, then the file doesn't exist
+        raise FileNotFoundError('Image \'{0}\' not found'.format(in_file))
+
+    # Equalizing the histogram
+    result = cv.equalizeHist(original)
 
     # Save it to disk
     cv.imwrite(out_file, result)
