@@ -249,7 +249,7 @@ def getFilteredImgSubmatrices(in_img: cv.Mat) -> pd.DataFrame:
     for i in range(0, height):  # loop through rows
         for j in range(0, width):   # loop through columns
             cur_sub = np.array([in_img[i, j]])
-            sub_list. append(cur_sub)
+            sub_list.append(cur_sub)
 
     return pd.DataFrame(np.array(sub_list, dtype=np.uint8))
 ## End of subimage section

@@ -7,7 +7,6 @@ import argparse
 from matplotlib import pyplot as plt
 
 def main():
-    # TODO: change argument parsing
     parser = argparse.ArgumentParser(description='Apply a filter to a image through a previously trained model')
     parser.add_argument("-m", "--model", type=str, default="trained.pkl", help="Path to trained model")
     parser.add_argument("-i", "--image", type=str, default=None, help="Path to image to process")
@@ -60,18 +59,20 @@ def main():
     rebuilt_pred = iu.rebuildImages(df_pred, height, width)
     fu.writeImages(predict_dir, pred_name, rebuilt_pred)
 
-    # TODO: show images in imshow for easy comparison
+    # Similarity measurement
     ssim, diff = iu.getSSIM(filtered, rebuilt_pred[0])
-    print('Image SSIM = {0}'.format(round(ssim, 3)))
-    cv.imwrite(predict_dir + diff_name, diff)
+    cv.imwrite(predict_dir + diff_name, diff)   # Save difference image
 
-
+    # Frequency spectrum similarity measurement
     f_pred = iu.fourierTransform(rebuilt_pred[0])
     f_actual = iu.fourierTransform(filtered)
     f_mse = iu.getMSE(f_pred, f_actual)
 
+    # Display the similarity measurements
+    print('Image SSIM = {0}'.format(round(ssim, 3)))
     print('Spectrum MSE = {0}'.format(round(f_mse, 3)))
 
+    # Display the predicted image, the actual filtered one, and their spectrums
     plt.subplot(221), plt.imshow(rebuilt_pred[0], cmap = 'gray')
     plt.title('Predicted Image'), plt.xticks([]), plt.yticks([])
     plt.subplot(222), plt.imshow(filtered, cmap = 'gray')
