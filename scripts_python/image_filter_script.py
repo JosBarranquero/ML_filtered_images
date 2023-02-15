@@ -12,7 +12,7 @@ canny_filter = True
 laplace_filter = True
 bilateral_filter = True
 motionblur_filter = True
-hybrid_filter = True
+custom_filter = True
 equalize_hist = True
 
 input_path = './originales/'
@@ -75,10 +75,10 @@ for i in range(1, num_images + 1):
         if (not fu.fileExists(output_motion)):     # Only process if the output file doesn't already exist
             iu.motionBlurFilter(input, output_motion)
 
-    if hybrid_filter:
-        output_hybrid = '{0}imagen{1}-hybrid.bmp'.format(output_path, i)
-        if (not fu.fileExists(output_hybrid)):     # Only process if the output file doesn't already exist
-            iu.hybridFilter(input, output_hybrid)
+    if custom_filter:
+        output_custom = '{0}imagen{1}-custom.bmp'.format(output_path, i)
+        if (not fu.fileExists(output_custom)):     # Only process if the output file doesn't already exist
+            iu.customFilter(input, output_custom)
 
     if equalize_hist:
         output_equalize = '{0}imagen{1}-equalize.bmp'.format(output_path, i)

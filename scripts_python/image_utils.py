@@ -176,7 +176,7 @@ def motionBlurFilter(in_file: str, out_file: str, size: int = 3):
     # Save it to disk
     cv.imwrite(out_file, result)
 
-def hybridFilter(in_file: str, out_file: str):
+def customFilter(in_file: str, out_file: str):
     """This function applies a filter (this behaves like a mixture of low and high pass) to a grayscale image. The resulting image is then saved to disk"""
     # Reading the input image
     original = cv.imread(in_file, cv.IMREAD_GRAYSCALE)

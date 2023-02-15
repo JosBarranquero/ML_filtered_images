@@ -15,20 +15,26 @@ def createRegressor(type: int, adaboost: bool = False):
     global __regressor__
 
     if type == LINEAR:
-        __regressor__ = LinearRegression()
+        # n_jobs = -1 : use all availables processors
+        __regressor__ = LinearRegression(n_jobs=-1)
     elif type == DECISSION_TREE:
         __regressor__ = DecisionTreeRegressor()
     elif type == RANDOM_FOREST:
-        __regressor__ = RandomForestRegressor(max_features="sqrt")
+        # n_jobs = -1 : use all availables processors
+        __regressor__ = RandomForestRegressor(max_features="sqrt", n_jobs=-1)
     else:
         __regressor__ = None
 
     if adaboost:
+        if type == DECISSION_TREE:
+            # making some modifications to the DTR if used with AdaBoost technique
+            __regressor__ = DecisionTreeRegressor(max_depth=12, max_features="sqrt")
+
         estimator = __regressor__
-        __regressor__ = AdaBoostRegressor(estimator)
+        __regressor__ = AdaBoostRegressor(estimator, n_estimators=100, learning_rate=0.1)
 
 def fitRegressor(X_train, y_train):
-    """Fits the training data to the regression algorith"""
+    """Fits the training data to the regression algorithm"""
     if __regressor__ is None:
         raise RuntimeError('Regression algorithm not created')
     
