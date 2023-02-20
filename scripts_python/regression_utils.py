@@ -4,9 +4,9 @@ from sklearn.tree import DecisionTreeRegressor
 from sklearn.ensemble import RandomForestRegressor, AdaBoostRegressor
 from file_utils import saveModelPkl, loadModelPkl
 
-LINEAR = 1
-DECISSION_TREE = 2
-RANDOM_FOREST = 3
+LINEAR = 0
+DECISSION_TREE = 1
+RANDOM_FOREST = 2
 
 def createRegressor(type: int, adaboost: bool = False):
     """This function creates a regression algorithm to be used later
@@ -15,12 +15,12 @@ def createRegressor(type: int, adaboost: bool = False):
     global __regressor__
 
     if type == LINEAR:
-        # n_jobs = -1 : use all availables processors
+        # n_jobs = -1 : use all available processors
         __regressor__ = LinearRegression(n_jobs=-1)
     elif type == DECISSION_TREE:
         __regressor__ = DecisionTreeRegressor()
     elif type == RANDOM_FOREST:
-        # n_jobs = -1 : use all availables processors
+        # n_jobs = -1 : use all available processors
         __regressor__ = RandomForestRegressor(max_features="sqrt", n_jobs=-1)
     else:
         __regressor__ = None

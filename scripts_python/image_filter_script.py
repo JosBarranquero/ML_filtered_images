@@ -12,6 +12,8 @@ canny_filter = True
 laplace_filter = True
 bilateral_filter = True
 motionblur_filter = True
+sharpen_filter = True
+emboss_filter = True
 custom_filter = True
 equalize_hist = True
 
@@ -74,6 +76,16 @@ for i in range(1, num_images + 1):
         output_motion = '{0}imagen{1}-motion.bmp'.format(output_path, i)
         if (not fu.fileExists(output_motion)):     # Only process if the output file doesn't already exist
             iu.motionBlurFilter(input, output_motion)
+
+    if sharpen_filter:
+        output_sharpen = '{0}imagen{1}-sharpen.bmp'.format(output_path, i)
+        if (not fu.fileExists(output_sharpen)):     # Only process if the output file doesn't already exist
+            iu.sharpenFilter(input, output_sharpen)
+
+    if emboss_filter:
+        output_emboss = '{0}imagen{1}-emboss.bmp'.format(output_path, i)
+        if (not fu.fileExists(output_emboss)):     # Only process if the output file doesn't already exist
+            iu.embossFilter(input, output_emboss)
 
     if custom_filter:
         output_custom = '{0}imagen{1}-custom.bmp'.format(output_path, i)

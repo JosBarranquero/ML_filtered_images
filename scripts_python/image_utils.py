@@ -159,7 +159,7 @@ def bilateralFilter(in_file: str, out_file: str, size: int = 3, sigma: float = 2
     # Save it to disk
     cv.imwrite(out_file, result)
 
-def motionBlurFilter(in_file: str, out_file: str, size: int = 3):
+def motionBlurFilter(in_file: str, out_file: str):
     """This function applies a motion blur filter to a grayscale image. The resulting image is then saved to disk"""
     # Reading the input image
     original = cv.imread(in_file, cv.IMREAD_GRAYSCALE)
@@ -168,6 +168,40 @@ def motionBlurFilter(in_file: str, out_file: str, size: int = 3):
         raise FileNotFoundError('Image \'{0}\' not found'.format(in_file))
 
     filter = np.array([[0, 0, 0.32], [0.32, 0.33, 0.01], [0.01, 0, 0]])
+
+    # Applying the filter
+    # Second parameter = -1 : keeps the same colordepth
+    result = cv.filter2D(original, -1, filter)
+
+    # Save it to disk
+    cv.imwrite(out_file, result)
+
+def sharpenFilter(in_file: str, out_file: str):
+    """This function applies a sharpening filter to a grayscale image. The resulting image is then saved to disk"""
+    # Reading the input image
+    original = cv.imread(in_file, cv.IMREAD_GRAYSCALE)
+
+    if original is None:    # If image wasn't read, then the file doesn't exist
+        raise FileNotFoundError('Image \'{0}\' not found'.format(in_file))
+
+    filter = np.array([[0, -1, 0], [-1, 5, -1], [0, -1, 0]])
+
+    # Applying the filter
+    # Second parameter = -1 : keeps the same colordepth
+    result = cv.filter2D(original, -1, filter)
+
+    # Save it to disk
+    cv.imwrite(out_file, result)
+
+def embossFilter(in_file: str, out_file: str):
+    """This function applies a sharpening filter to a grayscale image. The resulting image is then saved to disk"""
+    # Reading the input image
+    original = cv.imread(in_file, cv.IMREAD_GRAYSCALE)
+
+    if original is None:    # If image wasn't read, then the file doesn't exist
+        raise FileNotFoundError('Image \'{0}\' not found'.format(in_file))
+
+    filter = np.array([[-2, -1, 0], [-1, 1, -1], [0, 1, 2]])
 
     # Applying the filter
     # Second parameter = -1 : keeps the same colordepth
