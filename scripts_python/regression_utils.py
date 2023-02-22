@@ -2,13 +2,15 @@ import numpy as np
 from sklearn.linear_model import LinearRegression
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.ensemble import RandomForestRegressor, AdaBoostRegressor
+from sklearn.neighbors import KNeighborsRegressor
 from file_utils import saveModelPkl, loadModelPkl
 
 LINEAR = 0
 DECISSION_TREE = 1
 RANDOM_FOREST = 2
+K_NEAREST = 3
 
-def createRegressor(type: int, adaboost: bool = False):
+def createRegressor(type: int, adaboost: bool = False, n_neighbors: int = 5):
     """This function creates a regression algorithm to be used later
     If adaboost = True, then it will feed the regressor into an AdaBoostRegressor
     """
@@ -22,6 +24,8 @@ def createRegressor(type: int, adaboost: bool = False):
     elif type == RANDOM_FOREST:
         # n_jobs = -1 : use all available processors
         __regressor__ = RandomForestRegressor(max_features="sqrt", n_jobs=-1)
+    elif type == K_NEAREST:
+        __regressor__ = KNeighborsRegressor(n_neighbors=n_neighbors, n_jobs=-1)
     else:
         __regressor__ = None
 

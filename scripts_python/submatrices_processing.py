@@ -3,6 +3,7 @@ import file_utils as fu
 import image_utils as iu
 import regression_utils as ru
 from matplotlib import pyplot as plt
+import math
 
 # Processing options
 regressor = ru.LINEAR
@@ -68,7 +69,7 @@ if load_model_pkl:
     ru.loadRegressor()
 else:
     # Creating the regressor
-    ru.createRegressor(regressor, adaboost)
+    ru.createRegressor(regressor, adaboost, math.ceil((sub_size**2)/2))
     t0 = time()     # To check how long it takes to train
     ru.fitRegressor(X_train, y_train)
     print('Training Time:', round(time()-t0, 3), 's')
