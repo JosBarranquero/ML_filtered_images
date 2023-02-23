@@ -332,8 +332,13 @@ def fourierTransform(img: cv.Mat, shifted: bool = True):
     f = np.fft.fft2(img)
     if shifted:
         f = np.fft.fftshift(f)
+    
+    # to avoid zero values, and negative values in the final result, every value below 1 is now 1
+    # a bit tacky, but...
+    f = np.abs(f)
+    f[f < 1] = 1    
 
-    return 20*np.log(np.abs(f))
+    return 20*np.log10(f)
 ## End of frequency domain section
 
 ## Start of image similarity measurement section
@@ -363,7 +368,10 @@ def getNMI(ref: cv.Mat, test: cv.Mat) -> np.float64:
     1 indicates uncorrelated images
     2 indicates correlated images
     """
-    return normalized_mutual_information(ref, test)
+    nmi = normalized_mutual_information(ref, test)
+
+    # assuming that if the nmi is nan, the images can be totally correlated
+    return 2.0 if np.isnan(nmi) else nmi
 
 def getMSE(ref: cv.Mat, test: cv.Mat) -> np.float64:
     """Calculates the mean squared error of two images"""
