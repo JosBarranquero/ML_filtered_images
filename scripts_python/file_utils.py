@@ -68,8 +68,8 @@ def trainTestSplit(x: list[str], y: list[str], test_size: float, fixed_state: bo
     random_index = randomIndexList(x, fixed_state)
 
     # Using this random index list, the subsets are created
-    train_index = random_index[0:int(x_len*train_size)]
-    test_index = random_index[int(x_len*train_size):x_len]
+    train_index = random_index[0:round(x_len*train_size)]
+    test_index = random_index[round(x_len*train_size):x_len]
 
     X_train = [x[i] for i in train_index]
     y_train = [y[i] for i in train_index]
