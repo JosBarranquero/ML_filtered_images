@@ -205,7 +205,7 @@ def embossFilter(in_file: str, out_file: str):
 
     # Applying the filter
     # Second parameter = -1 : keeps the same colordepth
-    result = cv.filter2D(original, -1, filter)
+    result = cv.filter2D(original, -1, filter, borderType=cv.BORDER_CONSTANT)
 
     # Save it to disk
     cv.imwrite(out_file, result)
@@ -242,6 +242,103 @@ def histogramEq(in_file: str, out_file: str):
     # Save it to disk
     cv.imwrite(out_file, result)
 ## End of image filters section
+
+## Start of image transformation section
+def rotateImage(in_file: str, out_file: str, angle: float, in_img: cv.Mat = None) -> cv.Mat:
+    """This function rotates an imagen an angle. The resulting image is then saved to disk
+    If angle > 0 : rotation is clockwise, otherwise is counterclockwise
+    """
+    if in_img is None:
+        original = cv.imread(in_file, cv.IMREAD_GRAYSCALE)
+
+        if original is None:    # If image wasn't read, then the file doesn't exist
+            raise FileNotFoundError('Image \'{0}\' not found'.format(in_file))
+    else:
+        original = in_img
+    
+    # Generating the rotation matrix
+    (height, width) = original.shape
+    M = cv.getRotationMatrix2D((width/2, height/2), angle, 1) 
+
+    # Applying the rotation
+    result = cv.warpAffine(original, M, (width, height), borderMode=cv.BORDER_REPLICATE)    # This tuple goes backwards!
+
+    # Save it to disk
+    if out_file is not None:
+        cv.imwrite(out_file, result)
+    
+    return result
+
+def scaleImage(in_file: str, out_file: str, scale_percent : float, in_img: cv.Mat = None) -> cv.Mat:
+    """This function scales an imagen by scale_percent. The resulting image is then saved to disk
+    If scale_percent > 1 : image gets "zoomed in", otherwise "zoomed out"
+    """
+    if in_img is None:
+        original = cv.imread(in_file, cv.IMREAD_GRAYSCALE)
+
+        if original is None:    # If image wasn't read, then the file doesn't exist
+            raise FileNotFoundError('Image \'{0}\' not found'.format(in_file))
+    else:
+        original = in_img
+    
+    # Generating the rotation matrix
+    (height, width) = original.shape
+    M = cv.getRotationMatrix2D((width/2, height/2), 0, scale_percent) 
+
+    # Applying the rotation
+    result = cv.warpAffine(original, M, (width, height), borderMode=cv.BORDER_REPLICATE)    # This tuple goes backwards!
+
+    # Save it to disk
+    if out_file is not None:
+        cv.imwrite(out_file, result)
+    
+    return result
+
+def translateImage(in_file: str, out_file: str, tx: int, ty: int, in_img: cv.Mat = None) -> cv.Mat:
+    """This function translates an imagen by tx, ty. The resulting image is then saved to disk
+    """
+    if in_img is None:
+        original = cv.imread(in_file, cv.IMREAD_GRAYSCALE)
+
+        if original is None:    # If image wasn't read, then the file doesn't exist
+            raise FileNotFoundError('Image \'{0}\' not found'.format(in_file))
+    else:
+        original = in_img
+    
+    # Generating the rotation matrix
+    (height, width) = original.shape
+    M = np.float32([[1, 0, tx], [0, 1, ty]])
+
+    # Applying the rotation
+    result = cv.warpAffine(original, M, (width, height), borderMode=cv.BORDER_REPLICATE)    # This tuple goes backwards!
+
+    # Save it to disk
+    if out_file is not None:
+        cv.imwrite(out_file, result)
+    
+    return result
+
+def totalTransformation(in_file: str, out_file: str, angle: float, scale_factor: float, tx: int, ty: int):
+    """This function applies all transformations functions to an image and saves it to disk
+    """
+    original = cv.imread(in_file, cv.IMREAD_GRAYSCALE)
+
+    if original is None:    # If image wasn't read, then the file doesn't exist
+        raise FileNotFoundError('Image \'{0}\' not found'.format(in_file))
+    
+    # Apply rotation
+    result = rotateImage(in_file = None, out_file=None, angle=angle, in_img=original)
+
+    # Apply scaling
+    result = scaleImage(in_file = None, out_file=None, scale_percent=scale_factor, in_img=result)
+
+    # Apply translation
+    result = translateImage(in_file = None, out_file=None, tx=tx, ty=ty, in_img=result)
+
+    # Save it to disk
+    cv.imwrite(out_file, result)
+
+## End of image transformation section
 
 ## Start of subimage section
 def getOriginalImgSubmatrices(in_img: cv.Mat, sub_size: int = 3) -> pd.DataFrame:

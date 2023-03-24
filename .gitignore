@@ -15,6 +15,10 @@ explicaciones/
 # Pandas
 *.pkl
 
+# Sync
+*.db
+*.db-wal
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
