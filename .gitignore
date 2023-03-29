@@ -16,8 +16,8 @@ explicaciones/
 *.pkl
 
 # Sync
-*.db
-*.db-wal
+*.db*
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
